@@ -7,8 +7,6 @@ export interface Node {
     gScore: number; // distance from start
     hScore: number; // distance from end
     fScore: number // gScore + hScore
-    open: boolean;
-    closed: boolean;
     cameFrom: Nullable<Node>;
 }
 
@@ -21,8 +19,6 @@ export function createNode(x: number, y: number): Node {
         gScore: Infinity,
         hScore: 0,
         fScore: 0,
-        open: false,
-        closed: false,
         cameFrom: null
     };
 }
@@ -69,14 +65,14 @@ function heuristic(neighbor: Node, endNode: Node) {
     return distance(neighbor, endNode);
 }
 
-export function createPathfinder(grid: Grid, startX: number, startY: number, endX: number, endY: number) {
+export function createAStar(grid: Grid, startX: number, startY: number, endX: number, endY: number) {
     const openSet = new Set<Node>();
     const closedSet = new Set<Node>();
 
     const startNode = get(grid, startX, startY);
     const endNode = get(grid, endX, endY);
 
-    openSet.add(startNode); startNode.open = true;
+    openSet.add(startNode);
     startNode.gScore = 0;
 
     function step() {
@@ -93,8 +89,8 @@ export function createPathfinder(grid: Grid, startX: number, startY: number, end
             return true;
         }
 
-        openSet.delete(currentNode); currentNode.open = false;
-        closedSet.add(currentNode); currentNode.closed = true;
+        openSet.delete(currentNode);
+        closedSet.add(currentNode);
 
         const neighbors = getNeighbors(grid, currentNode);
 
@@ -109,7 +105,7 @@ export function createPathfinder(grid: Grid, startX: number, startY: number, end
 
             if (!openSet.has(neighbor)) {
                 // we have discovered a new node, add it to the open set
-                openSet.add(neighbor); neighbor.open = true;
+                openSet.add(neighbor);
             }
 
             if (tentativeGScore < neighbor.gScore) {
