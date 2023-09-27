@@ -1,7 +1,8 @@
 import { writable } from 'svelte/store';
-import type {Grid, Node} from "$lib/astar";
+import type {Node} from "$lib/astar";
 import {createGrid} from "$lib/create-grid";
 import {createAStar} from "$lib/astar";
+import {getInSet, gridToNodes, nodesToGrid} from "$lib/grid-nodes";
 
 export function createPathfinder() {
     const width = 40;
@@ -9,9 +10,14 @@ export function createPathfinder() {
 
     const originalGrid = createGrid(width, height);
 
-    const pathfinder = createAStar(originalGrid,  Math.round(Math.random() * width), Math.round(Math.random() * height), Math.round(Math.random() * width), Math.round(Math.random() * height));
+    const originalNodes = gridToNodes(originalGrid);
+    const originalStartNode = getInSet(originalNodes, 0, 0);
+    const originalEndNode = getInSet(originalNodes, width - 1, height - 1)
 
-    const grid = writable<Grid>(pathfinder.grid)
+    const pathfinder = createAStar(originalNodes, originalStartNode, originalEndNode);
+
+    const nodes = writable(pathfinder.nodes)
+    const grid = writable(originalGrid);
 
     const openSet = writable(pathfinder.openSet);
     const closedSet = writable(pathfinder.closedSet);
@@ -30,7 +36,8 @@ export function createPathfinder() {
 
     function step() {
         const res = pathfinder.step();
-        grid.set(pathfinder.grid);
+        nodes.set(pathfinder.nodes);
+        grid.set(nodesToGrid(pathfinder.nodes));
         openSet.set(pathfinder.openSet);
         closedSet.set(pathfinder.closedSet);
 
@@ -44,6 +51,7 @@ export function createPathfinder() {
 
     return {
         start,
+        nodes,
         grid,
         path,
         done,
