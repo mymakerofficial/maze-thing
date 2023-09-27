@@ -9,7 +9,9 @@ export function createGrid(width: number, height: number): Grid {
         grid[x] = new Array<Node>(height);
 
         for (let y = 0; y < grid[x].length; y++) {
-            grid[x][y] = createNode(x, y);
+            const wall = Math.random() < 0.3;
+
+            grid[x][y] = createNode(x, y, wall);
         }
     }
 

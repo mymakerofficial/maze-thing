@@ -4,6 +4,7 @@ export type Nullable<T> = T | null;
 export interface Node {
     x: number;
     y: number;
+    wall: boolean;
     gScore: number; // distance from start
     hScore: number; // distance from end
     fScore: number // gScore + hScore
@@ -12,10 +13,11 @@ export interface Node {
 
 export type Grid = Array<Array<Node>>;
 
-export function createNode(x: number, y: number): Node {
+export function createNode(x: number, y: number, wall: boolean): Node {
     return {
         x,
         y,
+        wall,
         gScore: Infinity,
         hScore: 0,
         fScore: 0,
@@ -100,6 +102,11 @@ export function createAStar(grid: Grid, startX: number, startY: number, endX: nu
                 continue;
             }
 
+            if (neighbor.wall) {
+                // if the neighbor is a wall, we can ignore it
+                continue;
+            }
+
             // distance from start to neighbor of current node
             const tentativeGScore = currentNode.gScore + distance(currentNode, neighbor);
 
@@ -123,7 +130,7 @@ export function createAStar(grid: Grid, startX: number, startY: number, endX: nu
     function getPath() {
         const path = new Array<Node>();
 
-        let currentNode = endNode;
+        let currentNode = getLowestFScoreOf(openSet)!;
 
         while (currentNode !== startNode) {
             path.push(currentNode);

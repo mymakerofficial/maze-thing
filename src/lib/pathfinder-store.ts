@@ -4,9 +4,12 @@ import {createGrid} from "$lib/create-grid";
 import {createAStar} from "$lib/astar";
 
 export function createPathfinder() {
-    const originalGrid = createGrid(10, 10);
+    const width = 40;
+    const height = 40;
 
-    const pathfinder = createAStar(originalGrid,  3, 3, 6, 8);
+    const originalGrid = createGrid(width, height);
+
+    const pathfinder = createAStar(originalGrid,  Math.round(Math.random() * width), Math.round(Math.random() * height), Math.round(Math.random() * width), Math.round(Math.random() * height));
 
     const grid = writable<Grid>(pathfinder.grid)
 
@@ -19,20 +22,28 @@ export function createPathfinder() {
     const path = writable(new Array<Node>());
     const done = writable(false);
 
+    function start() {
+        setInterval(() => {
+            step();
+        }, 10);
+    }
+
     function step() {
         const res = pathfinder.step();
         grid.set(pathfinder.grid);
         openSet.set(pathfinder.openSet);
         closedSet.set(pathfinder.closedSet);
 
+        path.set(pathfinder.getPath());
+
         if (res === true) {
-            path.set(pathfinder.getPath());
             done.set(true);
+            return;
         }
     }
 
     return {
-        step,
+        start,
         grid,
         path,
         done,
