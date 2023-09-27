@@ -9,15 +9,40 @@ export interface Cell {
 
 export type Grid = Array<Array<Cell>>;
 
-export function createCell(x: number, y: number, wall: boolean): Cell {
+export function createCell(x: number, y: number): Cell {
     return {
         x,
         y,
-        wallTop: wall,
-        wallRight: wall,
-        wallBottom: wall,
-        wallLeft: wall,
+        wallTop: true,
+        wallRight: true,
+        wallBottom: true,
+        wallLeft: true,
     };
+}
+
+function setWall(grid: Grid, x: number, y: number, value: boolean, direction: "top" | "right" | "bottom" | "left") {
+    switch (direction) {
+        case "top":
+            if (y === 0) return;
+            grid[x][y].wallTop = value;
+            grid[x][y - 1].wallBottom = value;
+            break;
+        case "right":
+            if (x === grid.length - 1) return;
+            grid[x][y].wallRight = value;
+            grid[x + 1][y].wallLeft = value;
+            break;
+        case "bottom":
+            if (y === grid[x].length - 1) return;
+            grid[x][y].wallBottom = value;
+            grid[x][y + 1].wallTop = value;
+            break;
+        case "left":
+            if (x === 0) return;
+            grid[x][y].wallLeft = value;
+            grid[x - 1][y].wallRight = value;
+            break;
+    }
 }
 
 export function createGrid(width: number, height: number): Grid {
@@ -27,9 +52,16 @@ export function createGrid(width: number, height: number): Grid {
         grid[x] = new Array<Cell>(height);
 
         for (let y = 0; y < grid[x].length; y++) {
-            const wall = Math.random() < 0.3;
+            grid[x][y] = createCell(x, y);
+        }
+    }
 
-            grid[x][y] = createCell(x, y, wall);
+    for (let x = 0; x < grid.length; x++) {
+        for (let y = 0; y < grid[x].length; y++) {
+            setWall(grid, x, y, Math.random() < 0.3, "top");
+            setWall(grid, x, y, Math.random() < 0.3, "right");
+            setWall(grid, x, y, Math.random() < 0.3, "bottom");
+            setWall(grid, x, y, Math.random() < 0.3, "left");
         }
     }
 

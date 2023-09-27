@@ -5,14 +5,14 @@ import {createAStar} from "$lib/astar";
 import {getInSet, gridToNodes, nodesToGrid} from "$lib/grid-nodes";
 
 export function createPathfinder() {
-    const width = 40;
-    const height = 40;
+    const width = 20;
+    const height = 20;
 
     const originalGrid = createGrid(width, height);
 
     const originalNodes = gridToNodes(originalGrid);
-    const originalStartNode = getInSet(originalNodes, 0, 0);
-    const originalEndNode = getInSet(originalNodes, width - 1, height - 1)
+    const originalStartNode = getInSet(originalNodes, Math.floor(Math.random() * width), Math.floor(Math.random() * height));
+    const originalEndNode = getInSet(originalNodes, Math.floor(Math.random() * width), Math.floor(Math.random() * height))
 
     const pathfinder = createAStar(originalNodes, originalStartNode, originalEndNode);
 
@@ -31,7 +31,7 @@ export function createPathfinder() {
     function start() {
         setInterval(() => {
             step();
-        }, 10);
+        }, 1);
     }
 
     function step() {

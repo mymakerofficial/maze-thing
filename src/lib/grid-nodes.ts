@@ -108,6 +108,6 @@ export function nodesToGrid(nodes: Set<Node>): Grid {
     return grid;
 }
 
-export function nodeFromCell(cell: Node, nodes: Set<Node>): Node {
+export function nodeFromCell(cell: Cell, nodes: Set<Node>): Node {
     return getInSet(nodes, cell.x, cell.y);
 }
