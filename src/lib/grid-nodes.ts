@@ -1,5 +1,5 @@
 import type {Node} from "$lib/astar";
-import type {Cell, Grid} from "./create-grid";
+import type {Cell, Grid} from "./grid";
 
 export function getInGrid(grid: Grid, x: number, y: number): Cell {
     return grid[x][y];

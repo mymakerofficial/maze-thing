@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 import type {Node} from "$lib/astar";
-import {createGrid} from "$lib/create-grid";
+import {createGrid} from "$lib/grid";
 import {createAStar} from "$lib/astar";
 import {getInSet, gridToNodes, nodesToGrid} from "$lib/grid-nodes";
 
