@@ -1,6 +1,5 @@
-import {chooseRandom} from "$lib/utils";
-import type {Node} from "$lib/astar";
-
+import {chooseRandom, randomBetween} from "$lib/utils";
+import type {Node, Nullable} from "$lib/astar";
 
 export interface Point2 {
     x: number;
@@ -20,8 +19,44 @@ function createNode(x: number, y: number): Node {
 }
 
 function connectNodes(a: Node, b: Node) {
+    if (a === b) {
+        return
+    }
+
+    if (a.neighbors.has(b) || b.neighbors.has(a)) {
+        return
+    }
+
     a.neighbors.add(b);
     b.neighbors.add(a);
+}
+
+function distance(a: Node, b: Node): number {
+    return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+}
+
+function findClosestNode(nodes: Set<Node>, node: Node): Nullable<Node> {
+    let closestNode: Node | undefined;
+    let closestDistance = Infinity;
+
+    for (const otherNode of nodes) {
+        if (otherNode === node) {
+            continue;
+        }
+
+        const dist = distance(node, otherNode);
+
+        if (dist < closestDistance) {
+            closestNode = otherNode;
+            closestDistance = dist;
+        }
+    }
+
+    if (!closestNode) {
+        return null
+    }
+
+    return closestNode;
 }
 
 function randomInRadius(center: Point2, radius: number): Point2 {
@@ -37,47 +72,33 @@ function randomInRadius(center: Point2, radius: number): Point2 {
 export function createCity() {
     const nodes = new Set<Node>();
 
-    const cityCenterSet = new Set<Node>();
-    const highwayPointSet = new Set<Node>();
-    const roadPointSet = new Set<Node>();
-
-    const highwayPointCount = 3;
-    const roadPointCount = 3;
-
     function step() {
-        // choose a random node from the city center set
-        const cityCenter = chooseRandom(cityCenterSet);
+        for (let i = 0; i < 200; i++) {
+            const point = randomInRadius({x: 0, y: 0}, i / 10);
 
-        // create highway points around the city center
-        for (let i = 0; i < highwayPointCount; i++) {
-            const point = randomInRadius(cityCenter, 6);
+            const newNode = createNode(point.x, point.y);
+            nodes.add(newNode);
+        }
 
-            const highwayPoint = createNode(point.x, point.y);
-            nodes.add(highwayPoint);
-            highwayPointSet.add(highwayPoint);
+        for (let i = 0; i < 400; i++) {
+            //const lowConnectivityNodes = new Set(Array.from(nodes).filter(node => node.neighbors.size < 4));
 
-            connectNodes(cityCenter, highwayPoint);
+            const currentNode = chooseRandom(nodes);
 
-            // create road points around the highway points
-            for (let i = 0; i < roadPointCount; i++) {
-                const point = randomInRadius(highwayPoint, 2);
+            const possibleNeighbors = new Set(Array.from(nodes).filter(node => !node.neighbors.has(currentNode)));
 
-                const roadPoint = createNode(point.x, point.y);
-                nodes.add(roadPoint);
-                roadPointSet.add(roadPoint);
+            const closestNode = findClosestNode(possibleNeighbors, currentNode);
 
-                connectNodes(highwayPoint, roadPoint);
+            if (!closestNode) {
+                continue;
             }
+
+            connectNodes(currentNode, closestNode);
         }
     }
 
     function init() {
         nodes.clear();
-
-        const initNode = createNode(0, 0);
-
-        nodes.add(initNode);
-        cityCenterSet.add(initNode);
     }
 
     return {

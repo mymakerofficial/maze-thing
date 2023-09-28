@@ -1,8 +1,9 @@
 import type {Node} from "$lib/astar";
 import type {Cell, Grid} from "./grid";
+import {createGrid} from "./grid";
 
 export function getInGrid(grid: Grid, x: number, y: number): Cell {
-    return grid[x][y];
+    return grid.flat().find(cell => cell.x === x && cell.y === y)!;
 }
 
 export function getInSet(nodes: Set<Node>, x: number, y: number): Node {
@@ -88,45 +89,25 @@ export function gridToNodes(grid: Grid): Set<Node> {
 }
 
 export function nodesToGrid(nodes: Set<Node>): Grid {
-    const grid = new Array<Array<Cell>>();
+    if (nodes.size === 0) {
+        return [[]]
+    }
 
     const minX = Math.min(...Array.from(nodes).map(node => node.x));
     const minY = Math.min(...Array.from(nodes).map(node => node.y));
+    const maxX = Math.max(...Array.from(nodes).map(node => node.x));
+    const maxY = Math.max(...Array.from(nodes).map(node => node.y));
+
+    const grid = createGrid(maxX - minX + 1, maxY - minY + 1, true)
 
     for (const node of nodes) {
-        if (!grid[node.x - minX]) {
-            grid[node.x - minX] = new Array<Cell>();
-        }
-
         grid[node.x - minX][node.y - minY] = {
-            x: node.x - minX,
-            y: node.y - minY,
+            x: node.x,
+            y: node.y,
             wallTop: !hasNeighborInDirection(node.neighbors, node, "top"),
             wallRight: !hasNeighborInDirection(node.neighbors, node, "right"),
             wallBottom: !hasNeighborInDirection(node.neighbors, node, "bottom"),
             wallLeft: !hasNeighborInDirection(node.neighbors, node, "left")
-        }
-    }
-
-    // fill in the gaps
-    for (let x = 0; x < grid.length; x++) {
-        if (!grid[x]) {
-            grid[x] = new Array<Cell>();
-        }
-
-        const row = grid[x];
-
-        for (let y = 0; y < row.length; y++) {
-            if (!grid[x][y]) {
-                grid[x][y] = {
-                    x,
-                    y,
-                    wallTop: true,
-                    wallRight: true,
-                    wallBottom: true,
-                    wallLeft: true
-                }
-            }
         }
     }
 

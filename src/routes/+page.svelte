@@ -50,9 +50,10 @@
 
         console.log(city.nodes, nodesToGrid(city.nodes))
 
-        const target = chooseRandom(city.nodes)
+        const start = chooseRandom(city.nodes)
+        const end = chooseRandom(city.nodes)
 
-        pathInit(city.nodes, 0, 0, target.x, target.y);
+        pathInit(city.nodes, start.x, start.y, end.x, end.y);
     }
 
     function useRandomGrid() {
@@ -109,7 +110,7 @@
             <div>open: {$pathOpenSet.size}</div>
             <div>closed: {$pathClosedSet.size}</div>
         </section>
-        <section class="flex flex-col gap-6">
+        <section class="flex flex-row gap-6">
             <div>
                 <h3 class="mb-2 text-lg font-bold text-neutral-600">grid view</h3>
                 <GridRenderer

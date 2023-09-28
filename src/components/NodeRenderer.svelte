@@ -100,7 +100,7 @@
     }
 </script>
 
-<svg viewBox={`0 0 ${(width + padding * 2) * scale} ${(height + padding * 2) * scale}`}>
+<svg viewBox={`0 0 ${(width + padding * 2) * scale} ${(height + padding * 2) * scale}`} class="h-96">
     <g>
         {#each nodes as node}
             <circle
@@ -118,8 +118,8 @@
                 {@const { startX, startY, endX, endY } = getLine(node.x, node.y, neighbor.x, neighbor.y) }
                 {@const { peakX, peakY, leftX, leftY, rightX, rightY } = getArrow(node.x, node.y, neighbor.x, neighbor.y) }
                 <g>
-                    <line x1={sclX(startX)} y1={sclY(startY)} x2={sclX(endX)} y2={sclY(endY)} class="stroke-neutral-600" />
-                    <polygon points={`${sclX(peakX)},${sclY(peakY)} ${sclX(leftX)},${sclY(leftY)} ${sclX(rightX)},${sclY(rightY)}`} class="fill-neutral-600" />
+                    <line data-color={getColor(node)} x1={sclX(startX)} y1={sclY(startY)} x2={sclX(endX)} y2={sclY(endY)} class="stroke-neutral-600 data-[color=red]:stroke-rose-400 data-[color=green]:stroke-green-400 data-[color=blue]:stroke-blue-400 data-[color=yellow]:stroke-amber-300 data-[color=purple]:stroke-purple-400" />
+                    <polygon data-color={getColor(node)} points={`${sclX(peakX)},${sclY(peakY)} ${sclX(leftX)},${sclY(leftY)} ${sclX(rightX)},${sclY(rightY)}`} class="fill-neutral-600 data-[color=red]:fill-rose-400 data-[color=green]:fill-green-400 data-[color=blue]:fill-blue-400 data-[color=yellow]:fill-amber-300 data-[color=purple]:fill-purple-400" />
                 </g>
             {/each}
         {/each}
