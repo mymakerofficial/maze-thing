@@ -8,6 +8,7 @@
     import GridRenderer from "../components/GridRenderer.svelte";
     import Button from "../components/Button.svelte";
     import NodeRenderer from "../components/NodeRenderer.svelte";
+    import Card from "../components/Card.svelte";
 
     const {
         start: mazeStart,
@@ -46,13 +47,18 @@
 </script>
 
 <main class="p-6 flex flex-wrap gap-8">
-    <section class="border-2 border-neutral-200 p-6 rounded-md flex flex-col gap-4">
+    <Card>
         <h2 class="text-xl font-bold"><a href="/maze">Recursive Backtracking Maze Generation</a></h2>
         <section class="flex flex-row gap-2">
             <Button on:click={mazeStart}>start</Button>
             <Button on:click={mazeStop}>stop</Button>
             <Button on:click={mazeStep}>step</Button>
             <Button on:click={mazeReset}>reset</Button>
+        </section>
+        <section class="flex flex-row gap-2 px-4 py-2 bg-neutral-100 rounded-sm font-mono text-neutral-700">
+            <div>done: {$mazeDone}</div>
+            <div>visited: {$mazeVisitedSet.size}</div>
+            <div>stack: {$mazeStack.length}</div>
         </section>
         <section>
             <h3 class="mb-2 text-lg font-bold text-neutral-600">grid view</h3>
@@ -62,13 +68,8 @@
                 getPurple={cell => $mazeStack.includes(cell)}
             />
         </section>
-        <section class="flex flex-row gap-2 px-4 py-2 bg-neutral-100 rounded-sm font-mono text-neutral-700">
-            <div>done: {$mazeDone}</div>
-            <div>visited: {$mazeVisitedSet.size}</div>
-            <div>stack: {$mazeStack.length}</div>
-        </section>
-    </section>
-    <section class="border-2 border-neutral-200 p-6 rounded-md flex flex-col gap-4">
+    </Card>
+    <Card>
         <h2 class="text-xl font-bold"><a href="/path">A* Pathfinding</a></h2>
         <section class="flex flex-row gap-2">
             <Button on:click={acceptMaze} primary>use maze</Button>
@@ -79,28 +80,32 @@
             <Button on:click={pathStep}>step</Button>
             <Button on:click={pathReset}>clear</Button>
         </section>
-        <section>
-            <h3 class="mb-2 text-lg font-bold text-neutral-600">grid view</h3>
-            <GridRenderer
-                grid={$pathGrid}
-                getRed={cell => $pathClosedSet.has(nodeFromCell(cell, $pathNodes))}
-                getGreen={cell => $pathOpenSet.has(nodeFromCell(cell, $pathNodes))}
-                getBlue={cell => $pathPath.includes(nodeFromCell(cell, $pathNodes))}
-                getYellow={cell => nodeFromCell(cell, $pathNodes) === $pathEndNode}
-            />
-            <h3 class="mb-2 text-lg font-bold text-neutral-600">node view</h3>
-            <NodeRenderer
-                nodes={$pathNodes}
-                getRed={node => $pathClosedSet.has(node)}
-                getGreen={node => $pathOpenSet.has(node)}
-                getBlue={node => $pathPath.includes(node)}
-            />
-        </section>
         <section class="flex flex-row gap-2 px-4 py-2 bg-neutral-100 rounded-sm font-mono text-neutral-700">
             <div>done: {$pathDone}</div>
             <div>nodes: {$pathNodes.size}</div>
             <div>open: {$pathOpenSet.size}</div>
             <div>closed: {$pathClosedSet.size}</div>
         </section>
-    </section>
+        <section class="flex flex-wrap gap-6">
+            <div>
+                <h3 class="mb-2 text-lg font-bold text-neutral-600">grid view</h3>
+                <GridRenderer
+                    grid={$pathGrid}
+                    getRed={cell => $pathClosedSet.has(nodeFromCell(cell, $pathNodes))}
+                    getGreen={cell => $pathOpenSet.has(nodeFromCell(cell, $pathNodes))}
+                    getBlue={cell => $pathPath.includes(nodeFromCell(cell, $pathNodes))}
+                    getYellow={cell => nodeFromCell(cell, $pathNodes) === $pathEndNode}
+                />
+            </div>
+            <div>
+                <h3 class="mb-2 text-lg font-bold text-neutral-600">node view</h3>
+                <NodeRenderer
+                    nodes={$pathNodes}
+                    getRed={node => $pathClosedSet.has(node)}
+                    getGreen={node => $pathOpenSet.has(node)}
+                    getBlue={node => $pathPath.includes(node)}
+                />
+            </div>
+        </section>
+    </Card>
 </main>

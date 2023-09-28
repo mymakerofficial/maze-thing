@@ -82,7 +82,7 @@
     }
 </script>
 
-<svg viewBox={`0 0 ${(width + padding * 2) * scale} ${(height + padding * 2) * scale}`}>
+<svg viewBox={`0 0 ${(width + padding * 2) * scale} ${(height + padding * 2) * scale}`} class="h-96">
     <g>
         {#each nodes as node}
             <circle
