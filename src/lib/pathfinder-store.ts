@@ -1,6 +1,7 @@
 import { writable } from 'svelte/store';
 import type {Node} from "$lib/astar";
 import {createGrid} from "$lib/grid";
+import type {Grid} from "$lib/grid";
 import {createAStar} from "$lib/astar";
 import {getInSet, gridToNodes, nodesToGrid} from "$lib/grid-nodes";
 import {gridHeight, gridWidth, randomBetween} from "$lib/utils";
@@ -50,14 +51,13 @@ export function createPathfinder() {
         clearInterval(interval);
     }
 
-    function reset() {
+    function init(grid: Grid, startX: number, startY: number, endX: number, endY: number) {
         stop();
 
-        const grid = createGrid(randomBetween(10, 30), randomBetween(10, 30), false);
         const nodes = gridToNodes(grid);
 
-        const newStartNode = getInSet(nodes, randomBetween(0, gridWidth(grid) - 1), randomBetween(0, gridHeight(grid) - 1));
-        const newEndNode = getInSet(nodes, randomBetween(0, gridWidth(grid) - 1), randomBetween(0, gridHeight(grid) - 1));
+        const newStartNode = getInSet(nodes, startX, startY);
+        const newEndNode = getInSet(nodes, endX, endY);
 
         pathfinder.init(nodes, newStartNode, newEndNode);
 
@@ -68,11 +68,17 @@ export function createPathfinder() {
         endNode.set(newEndNode);
     }
 
+    function reset() {
+        const grid = createGrid(randomBetween(10, 40), randomBetween(10, 40), false);
+        init(grid, randomBetween(0, gridWidth(grid) - 1), randomBetween(0, gridHeight(grid) - 1), randomBetween(0, gridWidth(grid) - 1), randomBetween(0, gridHeight(grid) - 1))
+    }
+
     return {
         start,
         stop,
         step,
         reset,
+        init,
         nodes,
         grid,
         path,

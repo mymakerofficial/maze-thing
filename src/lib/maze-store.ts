@@ -44,7 +44,7 @@ export function createMaze() {
 
     function reset() {
         stop();
-        maze.init(randomBetween(10, 30), randomBetween(10, 30))
+        maze.init(randomBetween(10, 40), randomBetween(10, 40))
         setValues();
         done.set(false);
     }
