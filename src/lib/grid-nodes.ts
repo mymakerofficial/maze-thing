@@ -90,18 +90,43 @@ export function gridToNodes(grid: Grid): Set<Node> {
 export function nodesToGrid(nodes: Set<Node>): Grid {
     const grid = new Array<Array<Cell>>();
 
+    const minX = Math.min(...Array.from(nodes).map(node => node.x));
+    const minY = Math.min(...Array.from(nodes).map(node => node.y));
+
     for (const node of nodes) {
-        if (!grid[node.x]) {
-            grid[node.x] = new Array<Cell>();
+        if (!grid[node.x - minX]) {
+            grid[node.x - minX] = new Array<Cell>();
         }
 
-        grid[node.x][node.y] = {
-            x: node.x,
-            y: node.y,
+        grid[node.x - minX][node.y - minY] = {
+            x: node.x - minX,
+            y: node.y - minY,
             wallTop: !hasNeighborInDirection(node.neighbors, node, "top"),
             wallRight: !hasNeighborInDirection(node.neighbors, node, "right"),
             wallBottom: !hasNeighborInDirection(node.neighbors, node, "bottom"),
             wallLeft: !hasNeighborInDirection(node.neighbors, node, "left")
+        }
+    }
+
+    // fill in the gaps
+    for (let x = 0; x < grid.length; x++) {
+        if (!grid[x]) {
+            grid[x] = new Array<Cell>();
+        }
+
+        const row = grid[x];
+
+        for (let y = 0; y < row.length; y++) {
+            if (!grid[x][y]) {
+                grid[x][y] = {
+                    x,
+                    y,
+                    wallTop: true,
+                    wallRight: true,
+                    wallBottom: true,
+                    wallLeft: true
+                }
+            }
         }
     }
 

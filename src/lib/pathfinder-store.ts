@@ -51,15 +51,13 @@ export function createPathfinder() {
         clearInterval(interval);
     }
 
-    function init(grid: Grid, startX: number, startY: number, endX: number, endY: number) {
+    function init(newNodes: Set<Node>, startX: number, startY: number, endX: number, endY: number) {
         stop();
 
-        const nodes = gridToNodes(grid);
+        const newStartNode = getInSet(newNodes, startX, startY);
+        const newEndNode = getInSet(newNodes, endX, endY);
 
-        const newStartNode = getInSet(nodes, startX, startY);
-        const newEndNode = getInSet(nodes, endX, endY);
-
-        pathfinder.init(nodes, newStartNode, newEndNode);
+        pathfinder.init(newNodes, newStartNode, newEndNode);
 
         setValues();
 
@@ -70,7 +68,7 @@ export function createPathfinder() {
 
     function reset() {
         const grid = createGrid(randomBetween(10, 40), randomBetween(10, 40), false);
-        init(grid, randomBetween(0, gridWidth(grid) - 1), randomBetween(0, gridHeight(grid) - 1), randomBetween(0, gridWidth(grid) - 1), randomBetween(0, gridHeight(grid) - 1))
+        init(gridToNodes(grid), randomBetween(0, gridWidth(grid) - 1), randomBetween(0, gridHeight(grid) - 1), randomBetween(0, gridWidth(grid) - 1), randomBetween(0, gridHeight(grid) - 1))
     }
 
     return {

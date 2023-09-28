@@ -6,18 +6,29 @@
     export let getRed: (node: Node) => boolean = () => false;
     export let getGreen: (node: Node) => boolean = () => false;
     export let getBlue: (node: Node) => boolean = () => false;
+    export let getYellow: (node: Node) => boolean = () => false;
+    export let getPurple: (node: Node) => boolean = () => false;
 
-    const scale = 40;
+    let scale = 40;
 
-    const padding = 0.2;
+    let padding = 0.2;
 
-    const nodeSize = 0.15;
+    let nodeSize = 0.15;
 
-    const arrowSize = 0.2;
-    const arrowWingAngle = 30;
+    let arrowSize = 0.2;
+    let arrowWingAngle = 30;
 
-    $: width = Math.max(...Array.from(nodes).map(node => node.x));
-    $: height = Math.max(...Array.from(nodes).map(node => node.y));
+    $: maxX = Math.max(...Array.from(nodes).map(node => node.x));
+    $: maxY = Math.max(...Array.from(nodes).map(node => node.y));
+    $: minX = Math.min(...Array.from(nodes).map(node => node.x));
+    $: minY = Math.min(...Array.from(nodes).map(node => node.y));
+
+    $: width = maxX - minX;
+    $: height = maxY - minY;
+
+    // offset for the center of the node
+    $: offsetX = -minX;
+    $: offsetY = -minY;
 
     function getLine(aX: number, aY: number, bX: number, bY: number) {
         const angle = Math.atan2(bY - aY, bX - aX); // radians
@@ -65,8 +76,11 @@
     }
 
     // applies scaling and padding to a number
-    function scl(n: number) {
-        return (n + padding) * scale;
+    function sclX(n: number) {
+        return (n + padding + offsetX) * scale;
+    }
+    function sclY(n: number) {
+        return (n + padding + offsetY) * scale;
     }
 
     function getColor(node: Node) {
@@ -76,19 +90,35 @@
             return "red";
         } else if (getGreen(node)) {
             return "green";
+        } else if (getYellow(node)) {
+            return "yellow";
+        } else if (getPurple(node)) {
+            return "purple";
         } else {
             return "black";
         }
     }
 </script>
 
+<div class="flex flex-row gap-2">
+    <div>minX { minX }</div>
+    <div>minY { minY }</div>
+    <div>maxX { maxX }</div>
+    <div>maxY { maxY }</div>
+    <div>offX { offsetX }</div>
+    <div>offY { offsetY }</div>
+    <div>width { width }</div>
+    <div>height { height }</div>
+</div>
+<input type="range" min="0" max="2" step="0.01" bind:value={nodeSize} />
+<input type="range" min="0" max="2" step="0.01" bind:value={arrowSize} />
 <svg viewBox={`0 0 ${(width + padding * 2) * scale} ${(height + padding * 2) * scale}`} class="h-96">
     <g>
         {#each nodes as node}
             <circle
                 data-color={getColor(node)}
-                cx={scl(node.x)}
-                cy={scl(node.y)}
+                cx={sclX(node.x)}
+                cy={sclY(node.y)}
                 r={nodeSize * scale}
                 class="fill-neutral-400 data-[color=red]:fill-rose-400 data-[color=green]:fill-green-400 data-[color=blue]:fill-blue-400 data-[color=yellow]:fill-amber-300 data-[color=purple]:fill-purple-400"
             />
@@ -100,8 +130,8 @@
                 {@const { startX, startY, endX, endY } = getLine(node.x, node.y, neighbor.x, neighbor.y) }
                 {@const { peakX, peakY, leftX, leftY, rightX, rightY } = getArrow(node.x, node.y, neighbor.x, neighbor.y) }
                 <g>
-                    <line x1={scl(startX)} y1={scl(startY)} x2={scl(endX)} y2={scl(endY)} class="stroke-neutral-600" />
-                    <polygon points={`${scl(peakX)},${scl(peakY)} ${scl(leftX)},${scl(leftY)} ${scl(rightX)},${scl(rightY)}`} class="fill-neutral-600" />
+                    <line x1={sclX(startX)} y1={sclY(startY)} x2={sclX(endX)} y2={sclY(endY)} class="stroke-neutral-600" />
+                    <polygon points={`${sclX(peakX)},${sclY(peakY)} ${sclX(leftX)},${sclY(leftY)} ${sclX(rightX)},${sclY(rightY)}`} class="fill-neutral-600" />
                 </g>
             {/each}
         {/each}

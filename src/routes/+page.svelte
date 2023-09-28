@@ -1,14 +1,16 @@
 <script lang="ts">
     import {createPathfinder} from "$lib/pathfinder-store";
-    import {nodeFromCell} from "$lib/grid-nodes";
+    import {nodeFromCell, nodesToGrid} from "$lib/grid-nodes";
     import {onMount} from "svelte";
     import {createMaze} from "$lib/maze-store";
-    import {gridHeight, gridWidth} from "$lib/utils";
+    import {chooseRandom, gridHeight, gridWidth} from "$lib/utils";
     import {get} from "svelte/store";
     import GridRenderer from "../components/GridRenderer.svelte";
     import Button from "../components/Button.svelte";
     import NodeRenderer from "../components/NodeRenderer.svelte";
     import Card from "../components/Card.svelte";
+    import {createCity} from "$lib/city";
+    import {gridToNodes} from "$lib/grid-nodes.js";
 
     const {
         start: mazeStart,
@@ -37,7 +39,19 @@
     } = createPathfinder()
 
     function acceptMaze() {
-        pathInit(get(mazeGrid), 0, 0, gridWidth(get(mazeGrid)) - 1, gridHeight(get(mazeGrid)) - 1);
+        pathInit(gridToNodes(get(mazeGrid)), 0, 0, gridWidth(get(mazeGrid)) - 1, gridHeight(get(mazeGrid)) - 1);
+    }
+
+    function useCity() {
+        const city = createCity();
+        city.init()
+        city.step()
+
+        console.log(city.nodes, nodesToGrid(city.nodes))
+
+        const target = chooseRandom(city.nodes)
+
+        pathInit(city.nodes, 0, 0, target.x, target.y);
     }
 
     onMount(() => {
@@ -73,6 +87,7 @@
         <h2 class="text-xl font-bold"><a href="/path">A* Pathfinding</a></h2>
         <section class="flex flex-row gap-2">
             <Button on:click={acceptMaze} primary>use maze</Button>
+            <Button on:click={useCity} primary>use city</Button>
         </section>
         <section class="flex flex-row gap-2">
             <Button on:click={pathStart}>start</Button>
@@ -104,6 +119,7 @@
                     getRed={node => $pathClosedSet.has(node)}
                     getGreen={node => $pathOpenSet.has(node)}
                     getBlue={node => $pathPath.includes(node)}
+                    getYellow={node => node === $pathEndNode}
                 />
             </div>
         </section>
