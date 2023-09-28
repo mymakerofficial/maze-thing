@@ -7,6 +7,7 @@
     import {get} from "svelte/store";
     import GridRenderer from "../components/GridRenderer.svelte";
     import Button from "../components/Button.svelte";
+    import NodeRenderer from "../components/NodeRenderer.svelte";
 
     const {
         start: mazeStart,
@@ -86,6 +87,13 @@
                 getGreen={cell => $pathOpenSet.has(nodeFromCell(cell, $pathNodes))}
                 getBlue={cell => $pathPath.includes(nodeFromCell(cell, $pathNodes))}
                 getYellow={cell => nodeFromCell(cell, $pathNodes) === $pathEndNode}
+            />
+            <h3 class="mb-2 text-lg font-bold text-neutral-600">node view</h3>
+            <NodeRenderer
+                nodes={$pathNodes}
+                getRed={node => $pathClosedSet.has(node)}
+                getGreen={node => $pathOpenSet.has(node)}
+                getBlue={node => $pathPath.includes(node)}
             />
         </section>
         <section class="flex flex-row gap-2 px-4 py-2 bg-neutral-100 rounded-sm font-mono text-neutral-700">
