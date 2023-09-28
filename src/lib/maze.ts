@@ -1,23 +1,16 @@
-import {createGrid} from "$lib/grid";
+import {createGrid, replaceGrid} from "$lib/grid";
 import type { Cell, Grid } from "$lib/grid";
+import {chooseRandom, gridHeight, gridWidth, randomBetween} from "$lib/utils";
 
 function get(grid: Grid, x: number, y: number): Cell {
     return grid[x][y];
 }
 
-function randomBetween(min: number, max: number): number {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
-function chooseRandom<T>(set: Set<T>) {
-    return Array.from(set)[randomBetween(0, set.size - 1)]
-}
-
 function getNeighbors(grid: Grid, cell: Cell): Set<Cell> {
     const neighbors = new Set<Cell>();
 
-    const width = grid.length;
-    const height = grid[0].length;
+    const width = gridWidth(grid);
+    const height = gridHeight(grid);
 
     const x = cell.x;
     const y = cell.y;
@@ -85,17 +78,14 @@ function removeWallsBetween(cellA: Cell, cellB: Cell) {
 }
 
 // https://en.wikipedia.org/wiki/Maze_generation_algorithm?useskin=vector#Randomized_depth-first_search
-export function createRecursiveBacktrackerMaze(width: number, height: number) {
-    const grid = createGrid(width, height);
+export function createRecursiveBacktrackerMaze() {
+    const grid = createGrid(1, 1);
 
     const stack = new Array<Cell>();
 
     const visitedSet = new Set<Cell>();
 
-    let currentCell = get(grid, randomBetween(0, width), randomBetween(0, height));
-
-    visitedSet.add(currentCell);
-    stack.push(currentCell);
+    let currentCell = get(grid, 0, 0);
 
     /***
      @returns true if the maze is complete
@@ -106,9 +96,9 @@ export function createRecursiveBacktrackerMaze(width: number, height: number) {
             return true;
         }
 
-        if (visitedSet.size === width * height) {
-            return true;
-        }
+        // if (visitedSet.size === gridWidth(grid) * gridHeight(grid)) {
+        //     return true;
+        // }
 
         currentCell = stack.pop()!;
 
@@ -128,8 +118,23 @@ export function createRecursiveBacktrackerMaze(width: number, height: number) {
         return false;
     }
 
+    function init(width?: number, height?: number) {
+        if (width !== undefined && height !== undefined) {
+            replaceGrid(grid, createGrid(width, height));
+        }
+
+        stack.length = 0;
+        visitedSet.clear();
+
+        currentCell = get(grid, randomBetween(0, gridWidth(grid) - 1), randomBetween(0, gridHeight(grid) - 1));
+
+        visitedSet.add(currentCell);
+        stack.push(currentCell);
+    }
+
     return {
         step,
+        init,
         grid,
         stack,
         visitedSet,

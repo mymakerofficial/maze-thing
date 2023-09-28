@@ -1,11 +1,9 @@
 import { writable } from 'svelte/store';
 import {createRecursiveBacktrackerMaze} from "$lib/maze";
+import {randomBetween} from "$lib/utils";
 
 export function createMaze() {
-    const width = 20;
-    const height = 20;
-
-    const maze = createRecursiveBacktrackerMaze(width, height);
+    const maze = createRecursiveBacktrackerMaze();
 
     const grid = writable(maze.grid);
 
@@ -14,27 +12,49 @@ export function createMaze() {
 
     const done = writable(false);
 
-    function start() {
-        setInterval(() => {
-            step();
-        }, 1);
+    let interval: number | undefined;
+
+    function setValues() {
+        grid.set(maze.grid);
+        stack.set(maze.stack);
+        visitedSet.set(maze.visitedSet);
     }
 
     function step() {
         const res = maze.step();
-        grid.set(maze.grid);
-        stack.set(maze.stack);
-        visitedSet.set(maze.visitedSet);
+
+        setValues();
 
         if (res) {
             done.set(true);
-            return;
         }
+    }
+
+    function start() {
+        interval = setInterval(() => {
+            step();
+        }, 1);
+    }
+
+    function stop() {
+        if (interval === undefined) return;
+
+        clearInterval(interval!);
+    }
+
+    function reset() {
+        stop();
+        maze.init(randomBetween(10, 30), randomBetween(10, 30))
+        setValues();
+        done.set(false);
     }
 
     return {
         start,
+        stop,
         step,
+        reset,
+        done,
         grid,
         stack,
         visitedSet,
