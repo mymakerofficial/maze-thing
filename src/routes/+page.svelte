@@ -3,7 +3,7 @@
     import {nodeFromCell, nodesToGrid} from "$lib/grid-nodes";
     import {onMount} from "svelte";
     import {createMaze} from "$lib/maze-store";
-    import {chooseRandom, gridHeight, gridWidth} from "$lib/utils";
+    import {chooseRandom, gridHeight, gridWidth, randomBetween} from "$lib/utils";
     import {get} from "svelte/store";
     import GridRenderer from "../components/GridRenderer.svelte";
     import Button from "../components/Button.svelte";
@@ -11,6 +11,7 @@
     import Card from "../components/Card.svelte";
     import {createCity} from "$lib/city";
     import {gridToNodes} from "$lib/grid-nodes.js";
+    import {createRandomGrid} from "$lib/grid";
 
     const {
         start: mazeStart,
@@ -54,6 +55,12 @@
         pathInit(city.nodes, 0, 0, target.x, target.y);
     }
 
+    function useRandomGrid() {
+        const grid = createRandomGrid(randomBetween(5, 40), randomBetween(5, 40))
+
+        pathInit(gridToNodes(grid), randomBetween(0, gridWidth(grid)), randomBetween(0, gridHeight(grid)), randomBetween(0, gridWidth(grid)), gridWidth(grid) - 1);
+    }
+
     onMount(() => {
         mazeReset();
         pathReset();
@@ -88,6 +95,7 @@
         <section class="flex flex-row gap-2">
             <Button on:click={acceptMaze} primary>use maze</Button>
             <Button on:click={useCity} primary>use city</Button>
+            <Button on:click={useRandomGrid} primary>use random</Button>
         </section>
         <section class="flex flex-row gap-2">
             <Button on:click={pathStart}>start</Button>
@@ -101,7 +109,7 @@
             <div>open: {$pathOpenSet.size}</div>
             <div>closed: {$pathClosedSet.size}</div>
         </section>
-        <section class="flex flex-wrap gap-6">
+        <section class="flex flex-col gap-6">
             <div>
                 <h3 class="mb-2 text-lg font-bold text-neutral-600">grid view</h3>
                 <GridRenderer
@@ -110,6 +118,7 @@
                     getGreen={cell => $pathOpenSet.has(nodeFromCell(cell, $pathNodes))}
                     getBlue={cell => $pathPath.includes(nodeFromCell(cell, $pathNodes))}
                     getYellow={cell => nodeFromCell(cell, $pathNodes) === $pathEndNode}
+                    getBlack={cell => cell.wallTop && cell.wallRight && cell.wallBottom && cell.wallLeft}
                 />
             </div>
             <div>

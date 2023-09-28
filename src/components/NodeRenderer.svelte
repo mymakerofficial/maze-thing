@@ -100,19 +100,7 @@
     }
 </script>
 
-<div class="flex flex-row gap-2">
-    <div>minX { minX }</div>
-    <div>minY { minY }</div>
-    <div>maxX { maxX }</div>
-    <div>maxY { maxY }</div>
-    <div>offX { offsetX }</div>
-    <div>offY { offsetY }</div>
-    <div>width { width }</div>
-    <div>height { height }</div>
-</div>
-<input type="range" min="0" max="2" step="0.01" bind:value={nodeSize} />
-<input type="range" min="0" max="2" step="0.01" bind:value={arrowSize} />
-<svg viewBox={`0 0 ${(width + padding * 2) * scale} ${(height + padding * 2) * scale}`} class="h-96">
+<svg viewBox={`0 0 ${(width + padding * 2) * scale} ${(height + padding * 2) * scale}`}>
     <g>
         {#each nodes as node}
             <circle
