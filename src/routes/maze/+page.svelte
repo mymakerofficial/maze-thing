@@ -28,6 +28,7 @@
         </div>
     </section>
     <section>
+        <h3 class="text-lg font-bold">grid view</h3>
         <div class="flex flex-row">
             {#each $grid as col}
                 <div class="flex flex-col">

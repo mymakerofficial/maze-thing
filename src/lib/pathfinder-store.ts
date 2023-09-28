@@ -3,21 +3,13 @@ import type {Node} from "$lib/astar";
 import {createGrid} from "$lib/grid";
 import {createAStar} from "$lib/astar";
 import {getInSet, gridToNodes, nodesToGrid} from "$lib/grid-nodes";
+import {gridHeight, gridWidth, randomBetween} from "$lib/utils";
 
 export function createPathfinder() {
-    const width = 20;
-    const height = 20;
-
-    const originalGrid = createGrid(width, height);
-
-    const originalNodes = gridToNodes(originalGrid);
-    const originalStartNode = getInSet(originalNodes, Math.floor(Math.random() * width), Math.floor(Math.random() * height));
-    const originalEndNode = getInSet(originalNodes, Math.floor(Math.random() * width), Math.floor(Math.random() * height))
-
-    const pathfinder = createAStar(originalNodes, originalStartNode, originalEndNode);
+    const pathfinder = createAStar();
 
     const nodes = writable(pathfinder.nodes)
-    const grid = writable(originalGrid);
+    const grid = writable(nodesToGrid(pathfinder.nodes));
 
     const openSet = writable(pathfinder.openSet);
     const closedSet = writable(pathfinder.closedSet);
@@ -28,29 +20,59 @@ export function createPathfinder() {
     const path = writable(new Array<Node>());
     const done = writable(false);
 
-    function start() {
-        setInterval(() => {
-            step();
-        }, 1);
-    }
+    let interval: number | undefined;
 
-    function step() {
-        const res = pathfinder.step();
+    function setValues() {
         nodes.set(pathfinder.nodes);
         grid.set(nodesToGrid(pathfinder.nodes));
         openSet.set(pathfinder.openSet);
         closedSet.set(pathfinder.closedSet);
-
         path.set(pathfinder.getPath());
+    }
+
+    function step() {
+        const res = pathfinder.step();
+
+        setValues();
 
         if (res === true) {
             done.set(true);
-            return;
         }
+    }
+
+    function start() {
+        interval = setInterval(() => {
+            step();
+        }, 1);
+    }
+
+    function stop() {
+        clearInterval(interval);
+    }
+
+    function reset() {
+        stop();
+
+        const grid = createGrid(randomBetween(10, 30), randomBetween(10, 30), false);
+        const nodes = gridToNodes(grid);
+
+        const newStartNode = getInSet(nodes, randomBetween(0, gridWidth(grid) - 1), randomBetween(0, gridHeight(grid) - 1));
+        const newEndNode = getInSet(nodes, randomBetween(0, gridWidth(grid) - 1), randomBetween(0, gridHeight(grid) - 1));
+
+        pathfinder.init(nodes, newStartNode, newEndNode);
+
+        setValues();
+
+        done.set(false);
+        startNode.set(newStartNode);
+        endNode.set(newEndNode);
     }
 
     return {
         start,
+        stop,
+        step,
+        reset,
         nodes,
         grid,
         path,

@@ -118,10 +118,8 @@ export function createRecursiveBacktrackerMaze() {
         return false;
     }
 
-    function init(width?: number, height?: number) {
-        if (width !== undefined && height !== undefined) {
-            replaceGrid(grid, createGrid(width, height));
-        }
+    function init(width: number, height: number) {
+        replaceGrid(grid, createGrid(width, height));
 
         stack.length = 0;
         visitedSet.clear();

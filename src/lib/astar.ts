@@ -23,14 +23,20 @@ function heuristic(neighbor: Node, endNode: Node) {
     return distance(neighbor, endNode);
 }
 
-export function createAStar(nodes: Set<Node>, startNode: Node, endNode: Node) {
+export function createAStar() {
+    const nodes = new Set<Node>();
+
+    let startNode: Node | undefined;
+    let endNode: Node | undefined;
+
     const openSet = new Set<Node>();
     const closedSet = new Set<Node>();
 
-    openSet.add(startNode);
-    startNode.gScore = 0;
-
     function step() {
+        if (!startNode || !endNode) {
+            throw new Error("Start node or end node is undefined");
+        }
+
         if (openSet.size === 0) {
             // no solution
             return false;
@@ -88,7 +94,24 @@ export function createAStar(nodes: Set<Node>, startNode: Node, endNode: Node) {
         return path.reverse();
     }
 
+    function init(newNodes: Set<Node>, newStartNode: Node, newEndNode: Node) {
+        nodes.clear();
+        openSet.clear();
+        closedSet.clear();
+
+        for (const node of newNodes) {
+            nodes.add(node);
+        }
+
+        startNode = newStartNode;
+        endNode = newEndNode;
+
+        openSet.add(startNode);
+        startNode.gScore = 0;
+    }
+
     return {
+        init,
         step,
         getPath,
         nodes,

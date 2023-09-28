@@ -9,18 +9,18 @@ export interface Cell {
 
 export type Grid = Array<Array<Cell>>;
 
-export function createCell(x: number, y: number): Cell {
+export function createCell(x: number, y: number, walls: boolean): Cell {
     return {
         x,
         y,
-        wallTop: true,
-        wallRight: true,
-        wallBottom: true,
-        wallLeft: true,
+        wallTop: walls,
+        wallRight: walls,
+        wallBottom: walls,
+        wallLeft: walls,
     };
 }
 
-export function createGrid(width: number, height: number): Grid {
+export function createGrid(width: number, height: number, walls: boolean = true): Grid {
     if (width < 1 || height < 1) throw new Error("Width and height must be greater than 0");
 
     const grid = new Array<Array<Cell>>(width) as Grid;
@@ -29,7 +29,7 @@ export function createGrid(width: number, height: number): Grid {
         grid[x] = new Array<Cell>(height);
 
         for (let y = 0; y < grid[x].length; y++) {
-            grid[x][y] = createCell(x, y);
+            grid[x][y] = createCell(x, y, walls);
         }
     }
 
