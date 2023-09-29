@@ -90,10 +90,10 @@
     function getColor(node: Node) {
         if (getBlue(node)) {
             return "blue";
-        } else if (getRed(node)) {
-            return "red";
         } else if (getGreen(node)) {
             return "green";
+        } else if (getRed(node)) {
+            return "red";
         } else if (getYellow(node)) {
             return "yellow";
         } else if (getPurple(node)) {

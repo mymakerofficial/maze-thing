@@ -1,11 +1,15 @@
 import type { Grid } from "./grid";
 
+export function randomFloatBetween(min: number, max: number): number {
+    return Math.random() * (max - min) + min;
+}
+
 export function randomBetween(min: number, max: number): number {
-    return Math.floor(Math.random() * (max - min + 1) + min);
+    return Math.floor(randomFloatBetween(min, max));
 }
 
 export function chooseRandom<T>(set: Set<T>) {
-    return Array.from(set)[randomBetween(0, set.size - 1)]
+    return Array.from(set)[randomBetween(0, set.size)]
 }
 
 export function gridWidth(grid: Grid): number {

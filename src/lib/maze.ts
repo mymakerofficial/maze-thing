@@ -124,7 +124,7 @@ export function createRecursiveBacktrackerMaze() {
         stack.length = 0;
         visitedSet.clear();
 
-        currentCell = get(grid, randomBetween(0, gridWidth(grid) - 1), randomBetween(0, gridHeight(grid) - 1));
+        currentCell = get(grid, randomBetween(0, gridWidth(grid)), randomBetween(0, gridHeight(grid)));
 
         visitedSet.add(currentCell);
         stack.push(currentCell);

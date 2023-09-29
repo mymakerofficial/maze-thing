@@ -1,6 +1,5 @@
 <script lang="ts">
     import {createPathfinder} from "$lib/pathfinder-store";
-    import {nodeFromCell, nodesToGrid} from "$lib/grid-nodes";
     import {onMount} from "svelte";
     import {createMaze} from "$lib/maze-store";
     import {chooseRandom, gridHeight, gridWidth, randomBetween} from "$lib/utils";
@@ -9,9 +8,9 @@
     import Button from "../components/Button.svelte";
     import NodeRenderer from "../components/NodeRenderer.svelte";
     import Card from "../components/Card.svelte";
-    import {createCity} from "$lib/city";
     import {gridToNodes} from "$lib/grid-nodes.js";
     import {createRandomGrid} from "$lib/grid";
+    import {createCityStore} from "$lib/city-store";
 
     const {
         start: mazeStart,
@@ -25,13 +24,22 @@
     } = createMaze()
 
     const {
+        start: cityStart,
+        stop: cityStop,
+        step: cityStep,
+        reset: cityReset,
+        done: cityDone,
+        nodes: cityNodes,
+    } = createCityStore()
+
+    const {
         start: pathStart,
         stop: pathStop,
         step: pathStep,
         reset: pathReset,
         init: pathInit,
         done: pathDone,
-        grid: pathGrid,
+        // grid: pathGrid,
         nodes: pathNodes,
         path: pathPath,
         openSet: pathOpenSet,
@@ -39,21 +47,15 @@
         endNode: pathEndNode,
     } = createPathfinder()
 
-    function acceptMaze() {
+    function useMaze() {
         pathInit(gridToNodes(get(mazeGrid)), 0, 0, gridWidth(get(mazeGrid)) - 1, gridHeight(get(mazeGrid)) - 1);
     }
 
     function useCity() {
-        const city = createCity();
-        city.init()
-        city.step()
+        const start = chooseRandom(get(cityNodes))
+        const end = chooseRandom(get(cityNodes))
 
-        console.log(city.nodes, nodesToGrid(city.nodes))
-
-        const start = chooseRandom(city.nodes)
-        const end = chooseRandom(city.nodes)
-
-        pathInit(city.nodes, start.x, start.y, end.x, end.y);
+        pathInit(get(cityNodes), start.x, start.y, end.x, end.y);
     }
 
     function useRandomGrid() {
@@ -64,6 +66,7 @@
 
     onMount(() => {
         mazeReset();
+        cityReset();
         pathReset();
     })
 </script>
@@ -92,9 +95,28 @@
         </section>
     </Card>
     <Card>
+        <h2 class="text-xl font-bold">City Generation</h2>
+        <section class="flex flex-row gap-2">
+            <Button on:click={cityStart}>start</Button>
+            <Button on:click={cityStop}>stop</Button>
+            <Button on:click={cityStep}>step</Button>
+            <Button on:click={cityReset}>reset</Button>
+        </section>
+        <section class="flex flex-row gap-2 px-4 py-2 bg-neutral-100 rounded-sm font-mono text-neutral-700">
+            <div>done: {$cityDone}</div>
+            <div>nodes: {$cityNodes.size}</div>
+        </section>
+        <section>
+            <h3 class="mb-2 text-lg font-bold text-neutral-600">node view</h3>
+            <NodeRenderer
+                nodes={$cityNodes}
+            />
+        </section>
+    </Card>
+    <Card>
         <h2 class="text-xl font-bold"><a href="/path">A* Pathfinding</a></h2>
         <section class="flex flex-row gap-2">
-            <Button on:click={acceptMaze} primary>use maze</Button>
+            <Button on:click={useMaze} primary>use maze</Button>
             <Button on:click={useCity} primary>use city</Button>
             <Button on:click={useRandomGrid} primary>use random</Button>
         </section>
@@ -114,16 +136,16 @@
             <div>
                 <h3 class="mb-2 text-lg font-bold text-neutral-600">node view</h3>
                 <NodeRenderer
-                        nodes={$pathNodes}
-                        getRed={node => $pathClosedSet.has(node)}
-                        getGreen={node => $pathOpenSet.has(node)}
-                        getBlue={node => $pathPath.includes(node)}
-                        getYellow={node => node === $pathEndNode}
-                        getArrowBlue={(a, b) => $pathPath.includes(a) && $pathPath.includes(b)}
-                        getArrowRed={(a, b) => $pathClosedSet.has(a) && $pathClosedSet.has(b)}
+                    nodes={$pathNodes}
+                    getRed={node => $pathClosedSet.has(node)}
+                    getGreen={node => $pathOpenSet.has(node)}
+                    getBlue={node => $pathPath.includes(node)}
+                    getYellow={node => node === $pathEndNode}
+                    getArrowBlue={(a, b) => $pathPath.includes(a) && $pathPath.includes(b)}
+                    getArrowRed={(a, b) => $pathClosedSet.has(a) && $pathClosedSet.has(b)}
                 />
             </div>
-            <div>
+            <!--<div>
                 <h3 class="mb-2 text-lg font-bold text-neutral-600">grid view</h3>
                 <GridRenderer
                     grid={$pathGrid}
@@ -133,7 +155,7 @@
                     getYellow={cell => nodeFromCell(cell, $pathNodes) === $pathEndNode}
                     getBlack={cell => cell.wallTop && cell.wallRight && cell.wallBottom && cell.wallLeft}
                 />
-            </div>
+            </div>-->
         </section>
     </Card>
 </main>

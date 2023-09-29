@@ -10,7 +10,7 @@ export function createPathfinder() {
     const pathfinder = createAStar();
 
     const nodes = writable(pathfinder.nodes)
-    const grid = writable(nodesToGrid(pathfinder.nodes));
+    // const grid = writable(nodesToGrid(pathfinder.nodes));
 
     const openSet = writable(pathfinder.openSet);
     const closedSet = writable(pathfinder.closedSet);
@@ -25,7 +25,7 @@ export function createPathfinder() {
 
     function setValues() {
         nodes.set(pathfinder.nodes);
-        grid.set(nodesToGrid(pathfinder.nodes));
+        // grid.set(nodesToGrid(pathfinder.nodes));
         openSet.set(pathfinder.openSet);
         closedSet.set(pathfinder.closedSet);
         path.set(pathfinder.getPath());
@@ -68,7 +68,7 @@ export function createPathfinder() {
 
     function reset() {
         const grid = createGrid(randomBetween(10, 40), randomBetween(10, 40), false);
-        init(gridToNodes(grid), randomBetween(0, gridWidth(grid) - 1), randomBetween(0, gridHeight(grid) - 1), randomBetween(0, gridWidth(grid) - 1), randomBetween(0, gridHeight(grid) - 1))
+        init(gridToNodes(grid), randomBetween(0, gridWidth(grid)), randomBetween(0, gridHeight(grid)), randomBetween(0, gridWidth(grid)), randomBetween(0, gridHeight(grid)))
     }
 
     return {
@@ -78,7 +78,7 @@ export function createPathfinder() {
         reset,
         init,
         nodes,
-        grid,
+        // grid,
         path,
         done,
         openSet,
