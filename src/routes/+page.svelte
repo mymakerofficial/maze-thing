@@ -59,7 +59,7 @@
     function useRandomGrid() {
         const grid = createRandomGrid(randomBetween(5, 40), randomBetween(5, 40))
 
-        pathInit(gridToNodes(grid), randomBetween(0, gridWidth(grid)), randomBetween(0, gridHeight(grid)), randomBetween(0, gridWidth(grid)), gridWidth(grid) - 1);
+        pathInit(gridToNodes(grid), randomBetween(0, gridWidth(grid)), randomBetween(0, gridHeight(grid)), randomBetween(0, gridWidth(grid)), randomBetween(0, gridHeight(grid)));
     }
 
     onMount(() => {
@@ -112,6 +112,18 @@
         </section>
         <section class="flex flex-row gap-6">
             <div>
+                <h3 class="mb-2 text-lg font-bold text-neutral-600">node view</h3>
+                <NodeRenderer
+                        nodes={$pathNodes}
+                        getRed={node => $pathClosedSet.has(node)}
+                        getGreen={node => $pathOpenSet.has(node)}
+                        getBlue={node => $pathPath.includes(node)}
+                        getYellow={node => node === $pathEndNode}
+                        getArrowBlue={(a, b) => $pathPath.includes(a) && $pathPath.includes(b)}
+                        getArrowRed={(a, b) => $pathClosedSet.has(a) && $pathClosedSet.has(b)}
+                />
+            </div>
+            <div>
                 <h3 class="mb-2 text-lg font-bold text-neutral-600">grid view</h3>
                 <GridRenderer
                     grid={$pathGrid}
@@ -120,16 +132,6 @@
                     getBlue={cell => $pathPath.includes(nodeFromCell(cell, $pathNodes))}
                     getYellow={cell => nodeFromCell(cell, $pathNodes) === $pathEndNode}
                     getBlack={cell => cell.wallTop && cell.wallRight && cell.wallBottom && cell.wallLeft}
-                />
-            </div>
-            <div>
-                <h3 class="mb-2 text-lg font-bold text-neutral-600">node view</h3>
-                <NodeRenderer
-                    nodes={$pathNodes}
-                    getRed={node => $pathClosedSet.has(node)}
-                    getGreen={node => $pathOpenSet.has(node)}
-                    getBlue={node => $pathPath.includes(node)}
-                    getYellow={node => node === $pathEndNode}
                 />
             </div>
         </section>

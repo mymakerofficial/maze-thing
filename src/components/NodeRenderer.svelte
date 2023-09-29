@@ -9,6 +9,10 @@
     export let getYellow: (node: Node) => boolean = () => false;
     export let getPurple: (node: Node) => boolean = () => false;
 
+    export let getArrowBlue: (nodeA: Node, nodeB: Node) => boolean = () => false;
+    export let getArrowRed: (nodeA: Node, nodeB: Node) => boolean = () => false;
+    export let getArrowGreen: (nodeA: Node, nodeB: Node) => boolean = () => false;
+
     let scale = 40;
 
     let padding = 0.2;
@@ -98,9 +102,21 @@
             return "black";
         }
     }
+
+    function getArrowColor(nodeA: Node, nodeB: Node) {
+        if (getArrowBlue(nodeA, nodeB)) {
+            return "blue";
+        } if (getArrowRed(nodeA, nodeB)) {
+            return "red";
+        } if (getArrowGreen(nodeA, nodeB)) {
+            return "green";
+        } else {
+            return "black";
+        }
+    }
 </script>
 
-<svg viewBox={`0 0 ${(width + padding * 2) * scale} ${(height + padding * 2) * scale}`} class="h-96">
+<svg viewBox={`0 0 ${(width + padding * 2) * scale} ${(height + padding * 2) * scale}`} class="w-[600px]">
     <g>
         {#each nodes as node}
             <circle
@@ -118,8 +134,8 @@
                 {@const { startX, startY, endX, endY } = getLine(node.x, node.y, neighbor.x, neighbor.y) }
                 {@const { peakX, peakY, leftX, leftY, rightX, rightY } = getArrow(node.x, node.y, neighbor.x, neighbor.y) }
                 <g>
-                    <line data-color={getColor(node)} x1={sclX(startX)} y1={sclY(startY)} x2={sclX(endX)} y2={sclY(endY)} class="stroke-neutral-600 data-[color=red]:stroke-rose-400 data-[color=green]:stroke-green-400 data-[color=blue]:stroke-blue-400 data-[color=yellow]:stroke-amber-300 data-[color=purple]:stroke-purple-400" />
-                    <polygon data-color={getColor(node)} points={`${sclX(peakX)},${sclY(peakY)} ${sclX(leftX)},${sclY(leftY)} ${sclX(rightX)},${sclY(rightY)}`} class="fill-neutral-600 data-[color=red]:fill-rose-400 data-[color=green]:fill-green-400 data-[color=blue]:fill-blue-400 data-[color=yellow]:fill-amber-300 data-[color=purple]:fill-purple-400" />
+                    <line data-color={getArrowColor(node, neighbor)} x1={sclX(startX)} y1={sclY(startY)} x2={sclX(endX)} y2={sclY(endY)} stroke-width="2" class="stroke-neutral-600 data-[color=red]:stroke-rose-400 data-[color=green]:stroke-green-400 data-[color=blue]:stroke-blue-400" />
+                    <polygon data-color={getArrowColor(node, neighbor)} points={`${sclX(peakX)},${sclY(peakY)} ${sclX(leftX)},${sclY(leftY)} ${sclX(rightX)},${sclY(rightY)}`} class="fill-neutral-600 data-[color=red]:fill-rose-400 data-[color=green]:fill-green-400 data-[color=blue]:fill-blue-400" />
                 </g>
             {/each}
         {/each}

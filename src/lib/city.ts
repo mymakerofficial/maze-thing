@@ -1,5 +1,6 @@
 import {chooseRandom, randomBetween} from "$lib/utils";
 import type {Node, Nullable} from "$lib/astar";
+import {connectNodes} from "$lib/nodes";
 
 export interface Point2 {
     x: number;
@@ -16,19 +17,6 @@ function createNode(x: number, y: number): Node {
         fScore: 0,
         cameFrom: null,
     }
-}
-
-function connectNodes(a: Node, b: Node) {
-    if (a === b) {
-        return
-    }
-
-    if (a.neighbors.has(b) || b.neighbors.has(a)) {
-        return
-    }
-
-    a.neighbors.add(b);
-    b.neighbors.add(a);
 }
 
 function distance(a: Node, b: Node): number {
@@ -80,12 +68,12 @@ export function createCity() {
             nodes.add(newNode);
         }
 
-        for (let i = 0; i < 400; i++) {
-            //const lowConnectivityNodes = new Set(Array.from(nodes).filter(node => node.neighbors.size < 4));
+        for (let i = 0; i < 800; i++) {
+            const lowConnectivityNodes = new Set(Array.from(nodes).filter(node => node.neighbors.size < 6));
 
-            const currentNode = chooseRandom(nodes);
+            const currentNode = chooseRandom(lowConnectivityNodes);
 
-            const possibleNeighbors = new Set(Array.from(nodes).filter(node => !node.neighbors.has(currentNode)));
+            const possibleNeighbors = new Set(Array.from(lowConnectivityNodes).filter(node => !node.neighbors.has(currentNode)).filter(node => distance(node, currentNode) < 6));
 
             const closestNode = findClosestNode(possibleNeighbors, currentNode);
 
