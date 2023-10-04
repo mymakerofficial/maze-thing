@@ -19,6 +19,7 @@
         stop: mazeStop,
         step: mazeStep,
         reset: mazeReset,
+        steps: mazeSteps,
         done: mazeDone,
         grid: mazeGrid,
         stack: mazeStack,
@@ -39,6 +40,7 @@
         stop: pathStop,
         step: pathStep,
         init: pathInit,
+        steps: pathSteps,
         done: pathDone,
         nodes: pathNodes,
         path: pathPath,
@@ -81,6 +83,7 @@
         </section>
         <section class="flex flex-row gap-2 px-4 py-2 bg-neutral-100 rounded-sm font-mono text-neutral-700">
             <div>done: {$mazeDone}</div>
+            <div>steps: {$mazeSteps}</div>
             <div>visited: {$mazeVisitedSet.size}</div>
             <div>stack: {$mazeStack.length}</div>
         </section>
@@ -127,6 +130,7 @@
         </section>
         <section class="flex flex-row gap-2 px-4 py-2 bg-neutral-100 rounded-sm font-mono text-neutral-700">
             <div>done: {$pathDone}</div>
+            <div>steps: {$pathSteps}</div>
             <div>nodes: {$pathNodes.size}</div>
             <div>open: {$pathOpenSet.size}</div>
             <div>closed: {$pathClosedSet.size}</div>

@@ -17,6 +17,8 @@ export function createAStarStore() {
     const endNode = writable(aStar.endNode);
 
     const path = writable(new Array<AStarNode>());
+
+    const steps = writable(0);
     const done = writable(false);
 
     let interval: number | undefined;
@@ -36,6 +38,7 @@ export function createAStarStore() {
 
         const res = aStar.step();
 
+        steps.update(n => n + 1);
         setValues();
 
         if (res === true) {
@@ -44,6 +47,7 @@ export function createAStarStore() {
     }
 
     function start() {
+        steps.set(0);
         interval = setInterval(() => {
             step();
         }, 1);
@@ -70,6 +74,7 @@ export function createAStarStore() {
         stop,
         step,
         init,
+        steps,
         nodes,
         path,
         done,
