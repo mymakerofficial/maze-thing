@@ -1,4 +1,5 @@
 import type {Vector} from "$lib/models/vector";
+import {createVector} from "$lib/models/vector";
 
 export function randomBetween(min: number, max: number): number {
     return Math.random() * (max - min) + min;
@@ -24,4 +25,24 @@ export function randomIntVectorBetween(min: Vector, max: Vector): Vector {
         x: randomIntBetween(min.x, max.x),
         y: randomIntBetween(min.y, max.y)
     }
+}
+
+export function randomInRadius(center: Vector, radius: number): Vector {
+    const angle = Math.random() * 2 * Math.PI;
+
+    const x = Math.round(center.x + Math.cos(angle) * radius);
+    const y = Math.round(center.y + Math.sin(angle) * radius);
+
+    return createVector(x, y);
+}
+
+export function randomAngle(): number {
+    return Math.random() * 2 * Math.PI;
+}
+
+export function angleToVector(angle: number, magnitude: number = 1): Vector {
+    return createVector(
+        Math.cos(angle) * magnitude,
+        Math.sin(angle) * magnitude,
+    )
 }

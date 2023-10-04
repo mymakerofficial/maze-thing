@@ -8,3 +8,16 @@ export function getNodeByPosition<T extends ConnectedNode>(elements: Set<T> | Ar
 export function positionFromNode<T extends Vector>(node: T): Vector {
     return {x: node.x, y: node.y};
 }
+
+export function connectNodes<T extends ConnectedNode>(a: T, b: T) {
+    if (a === b) {
+        return
+    }
+
+    if (a.neighbors.has(b) || b.neighbors.has(a)) {
+        return
+    }
+
+    a.neighbors.add(b);
+    b.neighbors.add(a);
+}

@@ -38,7 +38,7 @@ export function createMaze() {
     }
 
     function start() {
-        steps.set(0);
+        stop();
         interval = setInterval(() => {
             step();
         }, 1);
@@ -55,6 +55,7 @@ export function createMaze() {
         maze.init(randomIntBetween(4, 40), randomIntBetween(4, 40))
         setValues();
         done.set(false);
+        steps.set(0);
     }
 
     return {

@@ -47,7 +47,7 @@ export function createAStarStore() {
     }
 
     function start() {
-        steps.set(0);
+        stop();
         interval = setInterval(() => {
             step();
         }, 1);
@@ -67,6 +67,7 @@ export function createAStarStore() {
         done.set(false);
 
         setValues();
+        steps.set(0);
     }
 
     return {

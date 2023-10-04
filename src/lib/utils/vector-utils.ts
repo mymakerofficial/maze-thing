@@ -28,3 +28,8 @@ export function compareVectors(a: Vector, b: Vector): boolean {
     }
     return a.x === b.x && a.y === b.y;
 }
+
+// returns the angle between the two vectors in radians
+export function angleBetween(a: Vector, b: Vector): number {
+    return Math.atan2(b.y - a.y, b.x - a.x);
+}

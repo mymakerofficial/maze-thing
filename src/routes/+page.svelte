@@ -12,7 +12,10 @@
     import {createVector} from "$lib/models/vector";
     import {gridHeight, gridWidth} from "$lib/utils/grid-utils";
     import {compareVectors} from "$lib/utils/vector-utils.js";
-    // import {createCityStore} from "$lib/city-store";
+    import {createCityStore} from "$lib/stores/city-store";
+    import {chooseRandom} from "$lib/utils/math-utils";
+    import {positionFromNode} from "$lib/utils/node-utils.js";
+    import {cityNodesToConnectedNodes} from "$lib/mappers/city-node-mapper.js";
 
     const {
         start: mazeStart,
@@ -26,14 +29,14 @@
         visitedSet: mazeVisitedSet,
     } = createMaze()
 
-    // const {
-    //     start: cityStart,
-    //     stop: cityStop,
-    //     step: cityStep,
-    //     reset: cityReset,
-    //     done: cityDone,
-    //     nodes: cityNodes,
-    // } = createCityStore()
+    const {
+        start: cityStart,
+        stop: cityStop,
+        step: cityStep,
+        reset: cityReset,
+        steps: citySteps,
+        nodes: cityNodes,
+    } = createCityStore()
 
     const {
         start: pathStart,
@@ -53,12 +56,12 @@
         pathInit(gridToConnectedNodes(get(mazeGrid)), NULL_VECTOR, createVector(gridWidth(get(mazeGrid)) - 1, gridHeight(get(mazeGrid)) - 1));
     }
 
-    // function useCity() {
-    //     const start = chooseRandom(get(cityNodes))
-    //     const end = chooseRandom(get(cityNodes))
-    //
-    //     pathInit(get(cityNodes), start.x, start.y, end.x, end.y);
-    // }
+    function useCity() {
+        const start = positionFromNode(chooseRandom(get(cityNodes)))
+        const end = positionFromNode(chooseRandom(get(cityNodes)))
+
+        pathInit(cityNodesToConnectedNodes(get(cityNodes)), start, end);
+    }
 
     // function useRandomGrid() {
     //     const grid = createRandomGrid(randomBetween(5, 40), randomBetween(5, 40))
@@ -68,7 +71,7 @@
 
     onMount(() => {
         mazeReset();
-        // cityReset();
+        cityReset();
     })
 </script>
 
@@ -96,7 +99,7 @@
             />
         </section>
     </Card>
-    <!-- <Card>
+    <Card>
         <h2 class="text-xl font-bold">City Generation</h2>
         <section class="flex flex-row gap-2">
             <Button on:click={cityStart}>start</Button>
@@ -105,7 +108,7 @@
             <Button on:click={cityReset}>reset</Button>
         </section>
         <section class="flex flex-row gap-2 px-4 py-2 bg-neutral-100 rounded-sm font-mono text-neutral-700">
-            <div>done: {$cityDone}</div>
+            <div>steps: {$citySteps}</div>
             <div>nodes: {$cityNodes.size}</div>
         </section>
         <section>
@@ -114,12 +117,12 @@
                 nodes={$cityNodes}
             />
         </section>
-    </Card> -->
+    </Card>
     <Card>
         <h2 class="text-xl font-bold"><a href="/path">A* Pathfinding</a></h2>
         <section class="flex flex-row gap-2">
             <Button on:click={useMaze} primary>use maze</Button>
-            <!-- <Button on:click={useCity} primary>use city</Button> -->
+            <Button on:click={useCity} primary>use city</Button>
             <!-- <Button on:click={useRandomGrid} primary>use random</Button> -->
         </section>
         <section class="flex flex-row gap-2">
