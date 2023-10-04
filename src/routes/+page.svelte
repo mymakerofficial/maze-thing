@@ -93,6 +93,8 @@
     onMount(() => {
         mazeReset();
         cityReset();
+
+        useRandomGrid();
     })
 </script>
 
