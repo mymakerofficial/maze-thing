@@ -177,17 +177,6 @@
                     getArrowRed={(a, b) => $pathClosedSet.has(a) && $pathClosedSet.has(b)}
                 />
             </div>
-            <!--<div>
-                <h3 class="mb-2 text-lg font-bold text-neutral-600">grid view</h3>
-                <GridRenderer
-                    grid={$pathGrid}
-                    getRed={cell => $pathClosedSet.has(nodeFromCell(cell, $pathNodes))}
-                    getGreen={cell => $pathOpenSet.has(nodeFromCell(cell, $pathNodes))}
-                    getBlue={cell => $pathPath.includes(nodeFromCell(cell, $pathNodes))}
-                    getYellow={cell => nodeFromCell(cell, $pathNodes) === $pathEndNode}
-                    getBlack={cell => cell.wallTop && cell.wallRight && cell.wallBottom && cell.wallLeft}
-                />
-            </div>-->
         </section>
     </Card>
 </main>

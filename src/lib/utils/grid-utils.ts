@@ -1,6 +1,6 @@
 import type {Grid, GridCell} from "$lib/models/grid";
 import type {Vector} from "$lib/models/vector";
-import {LEFT, RIGHT, UP, subtractVectors, DOWN, addVectors, compareVectors} from "$lib/utils/vector-utils";
+import {LEFT, RIGHT, UP, subtractVectors, DOWN, addVectors, compareVectors, NULL_VECTOR} from "$lib/utils/vector-utils";
 import {randomIntVectorBetween} from "$lib/utils/math-utils";
 import {createVector} from "$lib/models/vector";
 
@@ -62,5 +62,5 @@ export function replaceGrid(grid: Grid, newGrid: Grid) {
 }
 
 export function randomCellIn(grid: Grid): GridCell {
-    return getCellByPosition(grid, randomIntVectorBetween(createVector(0, 0), createVector(gridWidth(grid), gridHeight(grid))))!;
+    return getCellByPosition(grid, randomIntVectorBetween(NULL_VECTOR, createVector(gridWidth(grid), gridHeight(grid))))!;
 }
