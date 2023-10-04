@@ -1,0 +1,27 @@
+import type {Vector} from "$lib/models/vector";
+
+export function randomBetween(min: number, max: number): number {
+    return Math.random() * (max - min) + min;
+}
+
+export function randomIntBetween(min: number, max: number): number {
+    return Math.floor(randomBetween(min, max));
+}
+
+export function chooseRandom<T>(set: Set<T>) {
+    return Array.from(set)[randomIntBetween(0, set.size)]
+}
+
+export function randomVectorBetween(min: Vector, max: Vector): Vector {
+    return {
+        x: randomBetween(min.x, max.x),
+        y: randomBetween(min.y, max.y)
+    }
+}
+
+export function randomIntVectorBetween(min: Vector, max: Vector): Vector {
+    return {
+        x: randomIntBetween(min.x, max.x),
+        y: randomIntBetween(min.y, max.y)
+    }
+}

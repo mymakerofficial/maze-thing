@@ -1,7 +1,7 @@
 import type {Vector} from "$lib/models/vector";
 import type {ConnectedNode} from "$lib/models/node";
 
-export function getByPosition<T extends ConnectedNode>(elements: Set<T> | Array<T>, position: Vector): T | undefined {
+export function getNodeByPosition<T extends ConnectedNode>(elements: Set<T> | Array<T>, position: Vector): T | undefined {
     return Array.from(elements).find(e => e.x === position.x && e.y === position.y)
 }
 

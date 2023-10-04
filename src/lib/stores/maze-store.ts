@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import {createRecursiveBacktrackerMaze} from "$lib/maze";
+import {createRecursiveBacktrackerMaze} from "$lib/algorithms/maze";
 import {randomBetween} from "$lib/utils";
 
 export function createMaze() {
@@ -44,7 +44,7 @@ export function createMaze() {
 
     function reset() {
         stop();
-        maze.init(randomBetween(10, 40), randomBetween(10, 40))
+        maze.init(randomBetween(4, 40), randomBetween(4, 40))
         setValues();
         done.set(false);
     }

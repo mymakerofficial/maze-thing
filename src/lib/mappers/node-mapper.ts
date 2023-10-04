@@ -1,5 +1,5 @@
 import type {ConnectedNode} from "$lib/models/node";
-import {getByPosition, positionFromNode} from "$lib/utils/node-utils";
+import {getNodeByPosition, positionFromNode} from "$lib/utils/node-utils";
 import type {Vector} from "$lib/models/vector";
 
 export function mapNodes<T extends ConnectedNode, U extends ConnectedNode>(originalNodes: Set<T>, constructor: (node: Vector) => U): Set<U> {
@@ -13,11 +13,11 @@ export function mapNodes<T extends ConnectedNode, U extends ConnectedNode>(origi
     // add neighbors
     for (const newNode of newNodes) {
         // find the corresponding node in the original set
-        const originalNode = getByPosition(originalNodes, newNode)!;
+        const originalNode = getNodeByPosition(originalNodes, newNode)!;
 
         for (const originalNeighbor of originalNode.neighbors) {
             // find the corresponding neighbor in the new set
-            const newNeighbor = getByPosition(newNodes, originalNeighbor)!;
+            const newNeighbor = getNodeByPosition(newNodes, originalNeighbor)!;
 
             newNode.neighbors.add(newNeighbor);
         }

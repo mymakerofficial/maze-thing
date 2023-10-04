@@ -1,10 +1,66 @@
 import type {Grid, GridCell} from "$lib/models/grid";
 import type {Vector} from "$lib/models/vector";
+import {LEFT, RIGHT, UP, subtractVectors, DOWN, addVectors, compareVectors} from "$lib/utils/vector-utils";
+import {randomIntVectorBetween} from "$lib/utils/math-utils";
+import {createVector} from "$lib/models/vector";
 
-export function getByPosition(grid: Grid, position: Vector): GridCell | undefined {
+export function getCellByPosition(grid: Grid, position: Vector): GridCell | undefined {
     return grid[position.x]?.[position.y];
 }
 
 export function positionFromCell(cell: GridCell): Vector {
     return {x: cell.x, y: cell.y};
+}
+
+export function gridWidth(grid: Grid): number {
+    return grid.length;
+}
+
+export function gridHeight(grid: Grid): number {
+    return grid[0].length;
+}
+
+export function getNeighbors(grid: Grid, cell: GridCell): Set<GridCell> {
+    const neighbors = new Set<GridCell>();
+
+    const directions = [LEFT, RIGHT, UP, DOWN];
+
+    for (const direction of directions) {
+        const neighbor = getCellByPosition(grid, addVectors(cell, direction));
+
+        if (neighbor) {
+            neighbors.add(neighbor);
+        }
+    }
+
+    return neighbors;
+}
+
+export function removeWallsBetween(cellA: GridCell, cellB: GridCell) {
+    const diff = subtractVectors(cellB, cellA);
+
+    if (compareVectors(diff, LEFT)) {
+        cellA.wallLeft = false;
+        cellB.wallRight = false;
+    } else if (compareVectors(diff, RIGHT)) {
+        cellA.wallRight = false;
+        cellB.wallLeft = false;
+    } else if (compareVectors(diff, UP)) {
+        cellA.wallTop = false;
+        cellB.wallBottom = false;
+    } else if (compareVectors(diff, DOWN)) {
+        cellA.wallBottom = false;
+        cellB.wallTop = false;
+    } else {
+        throw new Error("Cells are not adjacent");
+    }
+}
+
+// replace a grid without losing the reference to the original grid
+export function replaceGrid(grid: Grid, newGrid: Grid) {
+    grid.splice(0, grid.length, ...newGrid);
+}
+
+export function randomCellIn(grid: Grid): GridCell {
+    return getCellByPosition(grid, randomIntVectorBetween(createVector(0, 0), createVector(gridWidth(grid) - 1, gridHeight(grid) - 1)))!;
 }

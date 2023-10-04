@@ -3,7 +3,7 @@ import {euclideanDistance} from "$lib/utils/vector-utils";
 import type {ConnectedNode} from "$lib/models/node";
 import {connectedNodesToAStarNodes} from "$lib/mappers/astar-node-mapper";
 import type { Vector } from "$lib/models/vector";
-import {getByPosition} from "$lib/utils/node-utils";
+import {getNodeByPosition} from "$lib/utils/node-utils";
 
 function getLowestFScoreOf(openSet: Set<AStarNode>): AStarNode | undefined {
     return Array.from(openSet).reduce((a, b) => a.fScore! < b.fScore! ? a : b);
@@ -97,9 +97,9 @@ export function createAStar() {
             nodes.add(node);
         }
 
-        startNode = getByPosition(nodes, startPos);
+        startNode = getNodeByPosition(nodes, startPos);
         if (!startNode) { throw new Error("Start node not found"); }
-        endNode = getByPosition(nodes, endPos);
+        endNode = getNodeByPosition(nodes, endPos);
         if (!endNode) { throw new Error("End node not found"); }
 
         openSet.add(startNode);

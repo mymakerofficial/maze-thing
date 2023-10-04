@@ -3,8 +3,8 @@ import type {ConnectedNode} from "$lib/models/node";
 import {createNode} from "$lib/models/node";
 import {positionFromCell} from "$lib/utils/grid-utils";
 import {addVectors, DOWN, LEFT, RIGHT, UP} from "$lib/utils/vector-utils";
-import {getByPosition as getCellByPosition} from "$lib/utils/grid-utils";
-import {getByPosition as getNodeByPosition} from "$lib/utils/node-utils";
+import {getCellByPosition} from "$lib/utils/grid-utils";
+import {getNodeByPosition} from "$lib/utils/node-utils";
 
 export function gridToConnectedNodes(grid: Grid): Set<ConnectedNode> {
     const nodes = new Set<ConnectedNode>();
