@@ -1,4 +1,4 @@
-import type {Node} from "$lib/astar";
+import type {Node} from "$lib/algorithms/astar";
 import type {Cell, Grid} from "./grid";
 import {createGrid} from "./grid";
 

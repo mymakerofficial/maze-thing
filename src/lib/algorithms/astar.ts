@@ -1,36 +1,30 @@
+import type {AStarNode} from "$lib/models/a-star-node";
+import {euclideanDistance} from "$lib/utils/vector-utils";
+import type {ConnectedNode} from "$lib/models/node";
+import {connectedNodesToAStarNodes} from "$lib/mappers/astar-node-mapper";
+import type { Vector } from "$lib/models/vector";
+import {getByPosition} from "$lib/utils/node-utils";
 
-export type Nullable<T> = T | null;
-
-export interface Node {
-    x: number;
-    y: number;
-    neighbors: Set<Node>;
-    gScore: number; // distance from start
-    hScore: number; // distance from end
-    fScore: number // gScore + hScore
-    cameFrom: Nullable<Node>;
-}
-
-function getLowestFScoreOf(openSet: Set<Node>): Nullable<Node> {
+function getLowestFScoreOf(openSet: Set<AStarNode>): AStarNode | undefined {
     return Array.from(openSet).reduce((a, b) => a.fScore! < b.fScore! ? a : b);
 }
 
-function distance(a: Node, b: Node): number {
-    return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+function distance(a: AStarNode, b: AStarNode) {
+    return euclideanDistance(a, b);
 }
 
-function heuristic(neighbor: Node, endNode: Node) {
+function heuristic(neighbor: AStarNode, endNode: AStarNode) {
     return distance(neighbor, endNode);
 }
 
 export function createAStar() {
-    const nodes = new Set<Node>();
+    const nodes = new Set<AStarNode>();
 
-    let startNode: Node | undefined;
-    let endNode: Node | undefined;
+    let startNode: AStarNode | undefined;
+    let endNode: AStarNode | undefined;
 
-    const openSet = new Set<Node>();
-    const closedSet = new Set<Node>();
+    const openSet = new Set<AStarNode>();
+    const closedSet = new Set<AStarNode>();
 
     function step() {
         if (!startNode || !endNode) {
@@ -80,7 +74,7 @@ export function createAStar() {
     }
 
     function getPath() {
-        const path = new Array<Node>();
+        const path = new Array<AStarNode>();
 
         let currentNode = getLowestFScoreOf(openSet)!;
 
@@ -94,17 +88,19 @@ export function createAStar() {
         return path.reverse();
     }
 
-    function init(newNodes: Set<Node>, newStartNode: Node, newEndNode: Node) {
+    function init(newNodes: Set<ConnectedNode>, startPos: Vector, endPos: Vector) {
         nodes.clear();
         openSet.clear();
         closedSet.clear();
 
-        for (const node of newNodes) {
+        for (const node of connectedNodesToAStarNodes(newNodes)) {
             nodes.add(node);
         }
 
-        startNode = newStartNode;
-        endNode = newEndNode;
+        startNode = getByPosition(nodes, startPos);
+        if (!startNode) { throw new Error("Start node not found"); }
+        endNode = getByPosition(nodes, endPos);
+        if (!endNode) { throw new Error("End node not found"); }
 
         openSet.add(startNode);
         startNode.gScore = 0;

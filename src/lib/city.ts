@@ -1,5 +1,5 @@
 import {chooseRandom, randomFloatBetween} from "$lib/utils";
-import type {Node, Nullable} from "$lib/astar";
+import type {Node, Nullable} from "$lib/algorithms/astar";
 
 export interface Point2 {
     x: number;

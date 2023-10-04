@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { Node } from "$lib/astar";
+    import type { Node } from "$lib/algorithms/astar";
 
     export let nodes: Set<Node> = new Set();
 

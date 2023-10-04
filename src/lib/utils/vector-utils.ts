@@ -9,3 +9,7 @@ export const UP = createVector(0, -1);
 export const DOWN = createVector(0, 1);
 export const LEFT = createVector(-1, 0);
 export const RIGHT = createVector(1, 0);
+
+export function euclideanDistance(a: Vector, b: Vector): number {
+    return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+}

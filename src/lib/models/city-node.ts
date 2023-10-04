@@ -1,6 +1,7 @@
 import type {ConnectedNode} from "$lib/models/node";
 
 export interface CityNode extends ConnectedNode {
+    neighbors: Set<CityNode>;
     magnitude: number;
     depth: number;
 }

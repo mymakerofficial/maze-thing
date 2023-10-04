@@ -1,14 +1,15 @@
 import type {ConnectedNode} from "$lib/models/node";
 import type {Nullable} from "$lib/models/types";
 
-export interface AstarNode extends ConnectedNode {
+export interface AStarNode extends ConnectedNode {
+    neighbors: Set<AStarNode>,
     gScore: number,
     hScore: number,
     fScore: number,
-    cameFrom: Nullable<AstarNode>,
+    cameFrom: Nullable<AStarNode>,
 }
 
-export function createAstarNode(node: Partial<AstarNode>): AstarNode {
+export function createAStarNode(node: Partial<AStarNode>): AStarNode {
     return {
         x: 0,
         y: 0,

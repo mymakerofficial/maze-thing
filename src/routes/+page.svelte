@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {createPathfinder} from "$lib/pathfinder-store";
+    import {createAStarStore} from "$lib/stores/astar-store";
     import {onMount} from "svelte";
     import {createMaze} from "$lib/maze-store";
     import {chooseRandom, gridHeight, gridWidth, randomBetween} from "$lib/utils";
@@ -45,7 +45,7 @@
         openSet: pathOpenSet,
         closedSet: pathClosedSet,
         endNode: pathEndNode,
-    } = createPathfinder()
+    } = createAStarStore()
 
     function useMaze() {
         pathInit(gridToNodes(get(mazeGrid)), 0, 0, gridWidth(get(mazeGrid)) - 1, gridHeight(get(mazeGrid)) - 1);

@@ -1,4 +1,4 @@
-import type { Node } from "$lib/astar";
+import type { Node } from "$lib/algorithms/astar";
 
 export function createNode(x: number, y: number): Node {
     return {
