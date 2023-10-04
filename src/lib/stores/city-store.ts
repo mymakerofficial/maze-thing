@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import {get, writable} from 'svelte/store';
 import {createCity} from "$lib/algorithms/city";
 
 export function createCityStore() {
@@ -6,19 +6,32 @@ export function createCityStore() {
 
     const nodes = writable(city.nodes);
 
+    const activeNodes = writable(city.activeNodes);
+
     const steps = writable(0);
+    const done = writable(false);
 
     let interval: number | undefined;
 
     function setValues() {
         nodes.set(city.nodes);
+        activeNodes.set(city.activeNodes);
     }
 
     function step() {
-        city.step();
+        if (get(done)) {
+            stop();
+            return;
+        }
+
+        const res = city.step();
 
         steps.update(n => n + 1);
         setValues();
+
+        if (res) {
+            done.set(true);
+        }
     }
 
     function start() {
@@ -38,6 +51,7 @@ export function createCityStore() {
         stop();
         city.init()
         setValues();
+        done.set(false);
         steps.set(0);
     }
 
@@ -47,6 +61,8 @@ export function createCityStore() {
         step,
         reset,
         steps,
+        done,
         nodes,
+        activeNodes,
     }
 }

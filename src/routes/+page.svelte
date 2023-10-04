@@ -35,7 +35,9 @@
         step: cityStep,
         reset: cityReset,
         steps: citySteps,
+        done: cityDone,
         nodes: cityNodes,
+        activeNodes: cityActiveNodes,
     } = createCityStore()
 
     const {
@@ -108,13 +110,16 @@
             <Button on:click={cityReset}>reset</Button>
         </section>
         <section class="flex flex-row gap-2 px-4 py-2 bg-neutral-100 rounded-sm font-mono text-neutral-700">
+            <div>done: {$cityDone}</div>
             <div>steps: {$citySteps}</div>
             <div>nodes: {$cityNodes.size}</div>
+            <div>active: {$cityActiveNodes.size}</div>
         </section>
         <section>
             <h3 class="mb-2 text-lg font-bold text-neutral-600">node view</h3>
             <NodeRenderer
                 nodes={$cityNodes}
+                getRed={node => $cityActiveNodes.has(node)}
             />
         </section>
     </Card>
