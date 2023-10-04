@@ -62,5 +62,5 @@ export function replaceGrid(grid: Grid, newGrid: Grid) {
 }
 
 export function randomCellIn(grid: Grid): GridCell {
-    return getCellByPosition(grid, randomIntVectorBetween(createVector(0, 0), createVector(gridWidth(grid) - 1, gridHeight(grid) - 1)))!;
+    return getCellByPosition(grid, randomIntVectorBetween(createVector(0, 0), createVector(gridWidth(grid), gridHeight(grid))))!;
 }

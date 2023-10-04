@@ -10,12 +10,21 @@
     import {gridToConnectedNodes} from "$lib/mappers/grid-node-mapper";
     import {NULL_VECTOR} from "$lib/utils/vector-utils";
     import {createVector} from "$lib/models/vector";
-    import {gridHeight, gridWidth} from "$lib/utils/grid-utils";
+    import {
+        getNeighbors,
+        gridHeight,
+        gridWidth,
+        positionFromCell,
+        randomCellIn,
+        setWallsBetween
+    } from "$lib/utils/grid-utils";
     import {compareVectors} from "$lib/utils/vector-utils.js";
     import {createCityStore} from "$lib/stores/city-store";
     import {chooseRandom} from "$lib/utils/math-utils";
     import {positionFromNode} from "$lib/utils/node-utils.js";
     import {cityNodesToConnectedNodes} from "$lib/mappers/city-node-mapper.js";
+    import {createGrid} from "$lib/models/grid";
+    import {randomIntBetween} from "$lib/utils/math-utils.js";
 
     const {
         start: mazeStart,
@@ -65,11 +74,21 @@
         pathInit(cityNodesToConnectedNodes(get(cityNodes)), start, end);
     }
 
-    // function useRandomGrid() {
-    //     const grid = createRandomGrid(randomBetween(5, 40), randomBetween(5, 40))
-    //
-    //     pathInit(gridToNodes(grid), randomBetween(0, gridWidth(grid)), randomBetween(0, gridHeight(grid)), randomBetween(0, gridWidth(grid)), randomBetween(0, gridHeight(grid)));
-    // }
+    function useRandomGrid() {
+        const grid = createGrid(randomIntBetween(5, 40), randomIntBetween(5, 40), false)
+
+        for (let i = 0; i < gridWidth(grid) * gridHeight(grid); i++) {
+            const cell = randomCellIn(grid)
+            const neighbors = getNeighbors(grid, cell)
+            const neighbor = chooseRandom(neighbors)
+
+            if (neighbor) {
+                setWallsBetween(cell, neighbor, true)
+            }
+        }
+
+        pathInit(gridToConnectedNodes(grid), positionFromCell(randomCellIn(grid)), positionFromCell(randomCellIn(grid)));
+    }
 
     onMount(() => {
         mazeReset();
@@ -128,7 +147,7 @@
         <section class="flex flex-row gap-2">
             <Button on:click={useMaze} primary>use maze</Button>
             <Button on:click={useCity} primary>use city</Button>
-            <!-- <Button on:click={useRandomGrid} primary>use random</Button> -->
+            <Button on:click={useRandomGrid} primary>use random</Button>
         </section>
         <section class="flex flex-row gap-2">
             <Button on:click={pathStart}>start</Button>
