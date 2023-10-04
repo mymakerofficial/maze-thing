@@ -155,7 +155,6 @@
             <Button on:click={pathStart}>start</Button>
             <Button on:click={pathStop}>stop</Button>
             <Button on:click={pathStep}>step</Button>
-            <!-- <Button on:click={pathReset}>clear</Button> -->
         </section>
         <section class="flex flex-row gap-2 px-4 py-2 bg-neutral-100 rounded-sm font-mono text-neutral-700">
             <div>done: {$pathDone}</div>
