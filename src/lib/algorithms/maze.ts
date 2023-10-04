@@ -1,4 +1,4 @@
-import {getCellByPosition, getNeighbors, randomCellIn, removeWallsBetween, replaceGrid} from "$lib/utils/grid-utils";
+import {getCellByPosition, getNeighbors, randomCellIn, setWallsBetween, replaceGrid} from "$lib/utils/grid-utils";
 import {createGrid} from "$lib/models/grid";
 import type {Grid, GridCell} from "$lib/models/grid";
 import {NULL_VECTOR} from "$lib/utils/vector-utils";
@@ -46,7 +46,7 @@ export function createRecursiveBacktrackerMaze() {
 
             const selectedCell = chooseRandom(notVisitedNeighbors);
 
-            removeWallsBetween(currentCell, selectedCell);
+            setWallsBetween(currentCell, selectedCell, false);
 
             visitedSet.add(selectedCell);
             stack.push(selectedCell);

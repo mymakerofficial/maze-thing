@@ -36,21 +36,21 @@ export function getNeighbors(grid: Grid, cell: GridCell): Set<GridCell> {
     return neighbors;
 }
 
-export function removeWallsBetween(cellA: GridCell, cellB: GridCell) {
+export function setWallsBetween(cellA: GridCell, cellB: GridCell, wall: boolean = false) {
     const diff = subtractVectors(cellB, cellA);
 
     if (compareVectors(diff, LEFT)) {
-        cellA.wallLeft = false;
-        cellB.wallRight = false;
+        cellA.wallLeft = wall;
+        cellB.wallRight = wall;
     } else if (compareVectors(diff, RIGHT)) {
-        cellA.wallRight = false;
-        cellB.wallLeft = false;
+        cellA.wallRight = wall;
+        cellB.wallLeft = wall;
     } else if (compareVectors(diff, UP)) {
-        cellA.wallTop = false;
-        cellB.wallBottom = false;
+        cellA.wallTop = wall;
+        cellB.wallBottom = wall;
     } else if (compareVectors(diff, DOWN)) {
-        cellA.wallBottom = false;
-        cellB.wallTop = false;
+        cellA.wallBottom = wall;
+        cellB.wallTop = wall;
     } else {
         throw new Error("Cells are not adjacent");
     }
