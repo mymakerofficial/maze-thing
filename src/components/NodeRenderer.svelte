@@ -1,17 +1,17 @@
 <script lang="ts">
-    import type { Node } from "$lib/algorithms/astar";
+    import type {ConnectedNode} from "$lib/models/node.js";
 
-    export let nodes: Set<Node> = new Set();
+    export let nodes: Set<ConnectedNode> = new Set();
 
-    export let getRed: (node: Node) => boolean = () => false;
-    export let getGreen: (node: Node) => boolean = () => false;
-    export let getBlue: (node: Node) => boolean = () => false;
-    export let getYellow: (node: Node) => boolean = () => false;
-    export let getPurple: (node: Node) => boolean = () => false;
+    export let getRed: (node: ConnectedNode) => boolean = () => false;
+    export let getGreen: (node: ConnectedNode) => boolean = () => false;
+    export let getBlue: (node: ConnectedNode) => boolean = () => false;
+    export let getYellow: (node: ConnectedNode) => boolean = () => false;
+    export let getPurple: (node: ConnectedNode) => boolean = () => false;
 
-    export let getArrowBlue: (nodeA: Node, nodeB: Node) => boolean = () => false;
-    export let getArrowRed: (nodeA: Node, nodeB: Node) => boolean = () => false;
-    export let getArrowGreen: (nodeA: Node, nodeB: Node) => boolean = () => false;
+    export let getArrowBlue: (nodeA: ConnectedNode, nodeB: ConnectedNode) => boolean = () => false;
+    export let getArrowRed: (nodeA: ConnectedNode, nodeB: ConnectedNode) => boolean = () => false;
+    export let getArrowGreen: (nodeA: ConnectedNode, nodeB: ConnectedNode) => boolean = () => false;
 
     let scale = 40;
 
@@ -87,7 +87,7 @@
         return (n + padding + offsetY) * scale;
     }
 
-    function getColor(node: Node) {
+    function getColor(node: ConnectedNode) {
         if (getBlue(node)) {
             return "blue";
         } else if (getGreen(node)) {
@@ -103,7 +103,7 @@
         }
     }
 
-    function getArrowColor(nodeA: Node, nodeB: Node) {
+    function getArrowColor(nodeA: ConnectedNode, nodeB: ConnectedNode) {
         if (getArrowBlue(nodeA, nodeB)) {
             return "blue";
         } if (getArrowRed(nodeA, nodeB)) {

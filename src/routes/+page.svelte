@@ -7,8 +7,6 @@
     import Button from "../components/Button.svelte";
     import NodeRenderer from "../components/NodeRenderer.svelte";
     import Card from "../components/Card.svelte";
-    import {gridToNodes} from "$lib/grid-nodes.js";
-    import {createRandomGrid} from "$lib/grid";
     import {gridToConnectedNodes} from "$lib/mappers/grid-node-mapper";
     import {NULL_VECTOR} from "$lib/utils/vector-utils";
     import {createVector} from "$lib/models/vector";

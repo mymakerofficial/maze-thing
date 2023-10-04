@@ -1,16 +1,16 @@
 <script lang="ts">
-    import type {Cell, Grid} from "$lib/grid";
+    import type {Grid, GridCell} from "$lib/models/grid.js";
 
     export let grid: Grid;
-    export let getRed: (cell: Cell) => boolean = () => false;
-    export let getGreen: (cell: Cell) => boolean = () => false;
-    export let getBlue: (cell: Cell) => boolean = () => false;
-    export let getYellow: (cell: Cell) => boolean = () => false;
-    export let getPurple: (cell: Cell) => boolean = () => false;
-    export let getLightPurple: (cell: Cell) => boolean = () => false;
-    export let getBlack: (cell: Cell) => boolean = () => false;
+    export let getRed: (cell: GridCell) => boolean = () => false;
+    export let getGreen: (cell: GridCell) => boolean = () => false;
+    export let getBlue: (cell: GridCell) => boolean = () => false;
+    export let getYellow: (cell: GridCell) => boolean = () => false;
+    export let getPurple: (cell: GridCell) => boolean = () => false;
+    export let getLightPurple: (cell: GridCell) => boolean = () => false;
+    export let getBlack: (cell: GridCell) => boolean = () => false;
 
-    function getColor(cell: Cell) {
+    function getColor(cell: GridCell) {
         if (getBlue(cell)) {
             return "blue";
         } else if (getRed(cell)) {
